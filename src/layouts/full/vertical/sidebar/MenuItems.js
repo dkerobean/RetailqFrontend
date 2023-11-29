@@ -60,16 +60,15 @@ const Menuitems = [
 
   {
     id: uniqueId(),
-    title: 'Modern',
+    title: 'Home',
     icon: IconAperture,
     href: '/dashboards/modern',
-    chip: 'New',
     chipColor: 'secondary',
   },
   {
     id: uniqueId(),
-    title: 'eCommerce',
-    icon: IconShoppingCart,
+    title: 'Products',
+    icon: IconBasket,
     href: '/dashboards/ecommerce',
   },
   {
@@ -87,7 +86,7 @@ const Menuitems = [
 
   {
     id: uniqueId(),
-    title: 'Blog',
+    title: 'Sales',
     icon: IconChartDonut3,
     href: '/apps/blog/',
     children: [
