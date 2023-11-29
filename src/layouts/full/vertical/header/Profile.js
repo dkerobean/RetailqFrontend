@@ -45,6 +45,26 @@ const Profile = () => {
         fetchUserProfile();
     }, []);
 
+    const handleLogout = async () => {
+      try {
+        const response = await axios.post(
+          'http://127.0.0.1:8000/user/logout/',
+          { refresh_token: localStorage.getItem('refreshToken') }
+        );
+
+        // Clear tokens from localStorage
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+
+        // Redirect to login page
+        navigate('/auth/login');
+      } catch (error) {
+        console.error('Error during logout:', error);
+        console.log("error heten login")
+        console.log(localStorage.getItem('refreshToken'));
+      }
+    };
+
     if (!profile) {
         navigate('/auth/login');
     }else{
@@ -187,6 +207,7 @@ const Profile = () => {
               </Box>
               <Button
                 to="/auth/login"
+                onClick={handleLogout}
                 variant="outlined"
                 color="primary"
                 component={Link}

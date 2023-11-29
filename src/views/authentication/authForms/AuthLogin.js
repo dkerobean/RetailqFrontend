@@ -86,9 +86,12 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
         if (response.status === 200) {
           handleSuccess('Login success');
           const token = response.data.access;
+          const refreshToken = response.data.refresh;
 
           localStorage.setItem('accessToken', token);
+          localStorage.setItem('refreshToken', refreshToken);
           console.log('Login successful:', response.data);
+          console.log(refreshToken)
           navigate('/dashboards/modern');
         }
       } catch (error) {
