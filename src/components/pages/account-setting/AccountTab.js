@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { CardContent, Grid, Typography, MenuItem, Box, Avatar, Button, Stack } from '@mui/material';
+import { CardContent, Grid, Typography, MenuItem, Box, Avatar, Button, Stack, Snackbar } from '@mui/material';
 import BlankCard from '../../shared/BlankCard';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import CustomSelect from '../../forms/theme-elements/CustomSelect';
 import axios from 'axios';
+import Alert from '@mui/material/Alert';
+import { useNavigate } from 'react-router-dom';
 
 
 const locations = [
@@ -58,8 +60,43 @@ const currencies = [
 ];
 
 
-
 const AccountTab = () => {
+
+  // snackbar variables
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [openSnackbarSuccess, setOpenSnackbarSuccess] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+
+  // snackbar for sucess and error messages
+  const handleClick = (message = 'failed') => {
+      setSnackbarMessage(message);
+      setOpenSnackbar(true);
+    };
+
+  const handleSuccess = (message = 'success') => {
+    setSnackbarMessage(message);
+    setOpenSnackbarSuccess(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
+
+  const navigate = useNavigate();
+
+// UseEffect to handle redirection after the Snackbar is closed
+useEffect(() => {
+  if (openSnackbarSuccess) {
+    const timer = setTimeout(() => {
+      navigate('/dashboards/modern');
+    }, 1000);
+    return () => clearTimeout(timer);
+  }
+}, [openSnackbarSuccess, navigate]);
+
   const [location, setLocation] = useState('gh'); // Set default location
   const [currency, setCurrency] = useState('Retail'); // Set default currency
   const [profileData, setProfileData] = useState({
@@ -71,6 +108,7 @@ const AccountTab = () => {
     avatar: '',
     business_type: ''
   });
+  const [avatarFile, setAvatarFile] = useState(null);
 
   useEffect(() => {
     axios.get('http://127.0.0.1:8000/user/profile/view/', {headers: { 'Authorization': 'Bearer ' + localStorage.getItem('accessToken')}}) // Corrected the API URL
@@ -81,7 +119,7 @@ const AccountTab = () => {
       })
       .catch(error => {
         console.error('Error fetching user profile data:', error);
-        console.log(localStorage.getItem('accessToken'));
+        handleClick(error);
       });
   }, []);
 
@@ -93,26 +131,14 @@ const AccountTab = () => {
     setCurrency(event.target.value);
   };
 
-  const handleAvatarChange = (event) => {
-  const file = event.target.files[0];
-  setProfileData({ ...profileData, avatarFile: file });
-
-  // Assuming you want to display the new selected image immediately
-  const reader = new FileReader();
-  reader.onloadend = () => {
-    setProfileData({ ...profileData, avatarPreview: reader.result });
-    console.log("changing profile")
-  };
-  if (file) {
-    reader.readAsDataURL(file);
-  }
-};
-
-
   const handleSave = () => {
 
     const formData = new FormData();
-      formData.append('avatar', profileData.avatarFile);
+
+    // Check if a new avatar file is selected
+    if (avatarFile) {
+      formData.append('avatar', avatarFile);
+    }
 
     const updatedData = {
       name: profileData.name,
@@ -131,6 +157,7 @@ const AccountTab = () => {
   })
       .then(response => {
         console.log('Profile updated successfully:', response.data);
+        handleSuccess('Profile updated successfully')
       })
       .catch(error => {
         console.error('Error updating profile:', error);
@@ -141,6 +168,20 @@ const AccountTab = () => {
   return (
     <Grid container spacing={3}>
       {/* Change Profile */}
+      <div className="error-alert-wrapper">
+        <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+          <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
+      </div>
+      <div className="error-alert-wrapper">
+        <Snackbar open={openSnackbarSuccess} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+          <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
+      </div>
       <Grid item xs={12} lg={6}>
         <BlankCard>
           <CardContent>
@@ -160,7 +201,13 @@ const AccountTab = () => {
                 <Stack direction="row" justifyContent="center" spacing={2} my={3}>
                   <Button variant="contained" color="primary" component="label">
                     Upload
-                    <input hidden accept="image/*" multiple type="file" id="avatar" onChange={handleAvatarChange}/>
+                    <input
+                    hidden
+                    accept="image/*"
+                    multiple type="file"
+                    id="avatar"
+                    onChange={(e) => setAvatarFile(e.target.files[0])}
+                    />
                   </Button>
                   <Button variant="outlined" color="error">
                     Reset
