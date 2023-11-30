@@ -134,17 +134,20 @@ useEffect(() => {
     const formData = new FormData();
 
     // Check if a new avatar file is selected
-    if (avatarFile) {
-      formData.append('avatar', avatarFile);
-    }
+  if (avatarFile) {
+    formData.append('avatar', avatarFile,);
+    console.log(formData);
+    console.log("new file", avatarFile);
+  }
 
-    const updatedData = {
-      name: profileData.name,
-      display_name: profileData.display_name,
-      location: profileData.location,
-      mobile_number: profileData.mobile_number,
-      address: profileData.address,
-      business_type: profileData.business_type.value,
+  const updatedData = {
+    name: profileData.name,
+    display_name: profileData.display_name,
+    location: profileData.location,
+    mobile_number: profileData.mobile_number,
+    address: profileData.address,
+    business_type: profileData.business_type.value,
+    avatar: avatarFile
     };
 
     axios.put('http://127.0.0.1:8000/user/profile/view/', updatedData, {
@@ -205,6 +208,7 @@ useEffect(() => {
                     accept="image/*"
                     multiple type="file"
                     id="avatar"
+                    name="avatar"
                     onChange={(e) => setAvatarFile(e.target.files[0])}
                     />
                   </Button>
