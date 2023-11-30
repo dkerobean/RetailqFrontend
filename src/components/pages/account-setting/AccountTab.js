@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CardContent, Grid, Typography, MenuItem, Box, Avatar, Button, Stack, Snackbar } from '@mui/material';
+import { CardContent, Grid, Typography, MenuItem, Box, Avatar, Button, Stack, Snackbar, Autocomplete, TextField } from '@mui/material';
 import BlankCard from '../../shared/BlankCard';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
@@ -22,8 +22,8 @@ const locations = [
 
 const currencies = [
   {
-    value: 'Retail',
-    label: 'Retail',
+    value: 'Retaile',
+    label: 'Retaile',
   },
   {
     value: 'Manufacturing',
@@ -98,7 +98,7 @@ useEffect(() => {
 }, [openSnackbarSuccess, navigate]);
 
   const [location, setLocation] = useState('gh'); // Set default location
-  const [currency, setCurrency] = useState('Retail'); // Set default currency
+  const [currency, setCurrency] = useState('services'); // Set default currency
   const [profileData, setProfileData] = useState({
     name: '',
     display_name: '',
@@ -114,8 +114,6 @@ useEffect(() => {
     axios.get('http://127.0.0.1:8000/user/profile/view/', {headers: { 'Authorization': 'Bearer ' + localStorage.getItem('accessToken')}}) // Corrected the API URL
       .then(response => {
         setProfileData(response.data);
-        setLocation(response.data.location || ''); // Set location from API response
-        setCurrency(response.data.business_type || ''); // Set business_type from API response
       })
       .catch(error => {
         console.error('Error fetching user profile data:', error);
@@ -146,7 +144,7 @@ useEffect(() => {
       location: profileData.location,
       mobile_number: profileData.mobile_number,
       address: profileData.address,
-      business_type: profileData.business_type,
+      business_type: profileData.business_type.value,
     };
 
     axios.put('http://127.0.0.1:8000/user/profile/view/', updatedData, {
@@ -157,6 +155,7 @@ useEffect(() => {
   })
       .then(response => {
         console.log('Profile updated successfully:', response.data);
+        console.log(updatedData);
         handleSuccess('Profile updated successfully')
       })
       .catch(error => {
@@ -318,31 +317,7 @@ useEffect(() => {
                     fullWidth
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
-                  {/* 3 */}
-                  <CustomFormLabel
-                    sx={{
-                      mt: 0,
-                    }}
-                    htmlFor="text-location"
-                  >
-                    Location
-                  </CustomFormLabel>
-                  <CustomSelect
-                    fullWidth
-                    id="text-location"
-                    variant="outlined"
-                    name="location"
-                    value={location}
-                    onChange={handleChange1}
-                  >
-                    {locations.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </CustomSelect>
-                </Grid>
+
                 <Grid item xs={12} sm={6}>
                   {/* 4 */}
                   <CustomFormLabel
@@ -353,7 +328,7 @@ useEffect(() => {
                   >
                     Business Type
                   </CustomFormLabel>
-                  <CustomSelect
+                  {/* <CustomSelect
                     fullWidth
                     id="business_type"
                     variant="outlined"
@@ -366,7 +341,19 @@ useEffect(() => {
                         {option.label}
                       </MenuItem>
                     ))}
-                  </CustomSelect>
+                  </CustomSelect> */}
+                  <Autocomplete
+                    disablePortal
+                    id="business_type"
+                    name="business_type"
+                    options={currencies}
+                    sx={{ width: 300 }}
+                    value={profileData.business_type}
+                    onChange={(event, newValue) => {
+                      setProfileData({ ...profileData, business_type: newValue });
+                    }}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
                 </Grid>
 
                 <Grid item xs={12} sm={6}>
