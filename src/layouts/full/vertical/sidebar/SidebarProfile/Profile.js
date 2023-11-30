@@ -67,7 +67,7 @@ export const Profile = () => {
 
           <Box>
             <Typography variant="h6" color="textPrimary">
-              {profile.first_name}
+              {profile.name}
             </Typography>
             <Typography variant="caption" color="textSecondary">
               {profile.display_name}

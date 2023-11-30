@@ -1,67 +1,141 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { CardContent, Grid, Typography, MenuItem, Box, Avatar, Button, Stack } from '@mui/material';
-
-// components
 import BlankCard from '../../shared/BlankCard';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import CustomSelect from '../../forms/theme-elements/CustomSelect';
+import axios from 'axios';
 
-// images
-import user1 from 'src/assets/images/profile/user-1.jpg';
 
-// locations
 const locations = [
   {
-    value: 'us',
-    label: 'United States',
+    value: 'gh',
+    label: 'Ghana',
   },
   {
-    value: 'uk',
-    label: 'United Kingdom',
-  },
-  {
-    value: 'india',
-    label: 'India',
-  },
-  {
-    value: 'russia',
-    label: 'Russia',
-  },
+    value: 'ng',
+    label: 'Nigeria',
+  }
 ];
 
-// currency
 const currencies = [
   {
-    value: 'us',
-    label: 'US Dollar ($)',
+    value: 'Retail',
+    label: 'Retail',
   },
   {
-    value: 'uk',
-    label: 'United Kingdom (Pound)',
+    value: 'Manufacturing',
+    label: 'Manufacturing',
   },
   {
-    value: 'india',
-    label: 'India (INR)',
+    value: 'Food and Beverage',
+    label: 'Food and Beverage',
   },
   {
-    value: 'russia',
-    label: 'Russia (Ruble)',
+    value: 'Automotive',
+    label: 'Automotive',
   },
+  {
+    value: 'Healthcare',
+    label: 'Healthcare',
+  },
+  {
+    value: 'Construction and Home Improvement',
+    label: 'Construction and Home Improvement',
+  },
+  {
+    value: 'Services',
+    label: 'Services',
+  },
+  {
+    value: 'Entertainment and Leisure',
+    label: 'Entertainment and Leisure',
+  },
+  {
+    value: 'Transportation and Logistics',
+    label: 'Transportation and Logistics',
+  }
 ];
 
+
+
 const AccountTab = () => {
-  const [location, setLocation] = React.useState('india');
+  const [location, setLocation] = useState('gh'); // Set default location
+  const [currency, setCurrency] = useState('Retail'); // Set default currency
+  const [profileData, setProfileData] = useState({
+    name: '',
+    display_name: '',
+    location: '',
+    phone: '',
+    address: '',
+    avatar: '',
+    business_type: ''
+  });
+
+  useEffect(() => {
+    axios.get('http://127.0.0.1:8000/user/profile/view/', {headers: { 'Authorization': 'Bearer ' + localStorage.getItem('accessToken')}}) // Corrected the API URL
+      .then(response => {
+        setProfileData(response.data);
+        setLocation(response.data.location || ''); // Set location from API response
+        setCurrency(response.data.business_type || ''); // Set business_type from API response
+      })
+      .catch(error => {
+        console.error('Error fetching user profile data:', error);
+        console.log(localStorage.getItem('accessToken'));
+      });
+  }, []);
 
   const handleChange1 = (event) => {
     setLocation(event.target.value);
   };
 
-  //   currency
-  const [currency, setCurrency] = React.useState('india');
-
   const handleChange2 = (event) => {
     setCurrency(event.target.value);
+  };
+
+  const handleAvatarChange = (event) => {
+  const file = event.target.files[0];
+  setProfileData({ ...profileData, avatarFile: file });
+
+  // Assuming you want to display the new selected image immediately
+  const reader = new FileReader();
+  reader.onloadend = () => {
+    setProfileData({ ...profileData, avatarPreview: reader.result });
+    console.log("changing profile")
+  };
+  if (file) {
+    reader.readAsDataURL(file);
+  }
+};
+
+
+  const handleSave = () => {
+
+    const formData = new FormData();
+      formData.append('avatar', profileData.avatarFile);
+
+    const updatedData = {
+      name: profileData.name,
+      display_name: profileData.display_name,
+      location: profileData.location,
+      mobile_number: profileData.mobile_number,
+      address: profileData.address,
+      business_type: profileData.business_type,
+    };
+
+    axios.put('http://127.0.0.1:8000/user/profile/view/', updatedData, {
+    headers: {
+      'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+      .then(response => {
+        console.log('Profile updated successfully:', response.data);
+      })
+      .catch(error => {
+        console.error('Error updating profile:', error);
+        console.log(updatedData);
+      });
   };
 
   return (
@@ -73,25 +147,27 @@ const AccountTab = () => {
             <Typography variant="h5" mb={1}>
               Change Profile
             </Typography>
-            <Typography color="textSecondary" mb={3}>Change your profile picture from here</Typography>
+            <Typography color="textSecondary" mb={3}>
+              Change your profile picture from here
+            </Typography>
             <Box textAlign="center" display="flex" justifyContent="center">
               <Box>
                 <Avatar
-                  src={user1}
-                  alt={user1}
+                  src={`http://127.0.0.1:8000${profileData.avatar}`} // Use avatar from the API response
+                  alt={profileData.avatar}
                   sx={{ width: 120, height: 120, margin: '0 auto' }}
                 />
                 <Stack direction="row" justifyContent="center" spacing={2} my={3}>
                   <Button variant="contained" color="primary" component="label">
                     Upload
-                    <input hidden accept="image/*" multiple type="file" />
+                    <input hidden accept="image/*" multiple type="file" id="avatar" onChange={handleAvatarChange}/>
                   </Button>
                   <Button variant="outlined" color="error">
                     Reset
                   </Button>
                 </Stack>
                 <Typography variant="subtitle1" color="textSecondary" mb={4}>
-                  Allowed JPG, GIF or PNG. Max size of 800K
+                  Allowed JPG, GIF, or PNG. Max size of 800K
                 </Typography>
               </Box>
             </Box>
@@ -105,7 +181,9 @@ const AccountTab = () => {
             <Typography variant="h5" mb={1}>
               Change Password
             </Typography>
-            <Typography color="textSecondary" mb={3}>To change your password please confirm here</Typography>
+            <Typography color="textSecondary" mb={3}>
+              To change your password please confirm here
+            </Typography>
             <form>
               <CustomFormLabel
                 sx={{
@@ -151,7 +229,9 @@ const AccountTab = () => {
             <Typography variant="h5" mb={1}>
               Personal Details
             </Typography>
-            <Typography color="textSecondary" mb={3}>To change your personal detail , edit and save from here</Typography>
+            <Typography color="textSecondary" mb={3}>
+              To change your personal detail, edit and save from here
+            </Typography>
             <form>
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={6}>
@@ -165,8 +245,10 @@ const AccountTab = () => {
                   </CustomFormLabel>
                   <CustomTextField
                     id="text-name"
-                    value="Mathew Anderson"
+                    value={profileData.name}
                     variant="outlined"
+                    onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
+                    name="name"
                     fullWidth
                   />
                 </Grid>
@@ -182,8 +264,10 @@ const AccountTab = () => {
                   </CustomFormLabel>
                   <CustomTextField
                     id="text-store-name"
-                    value="Maxima Studio"
+                    value={profileData.display_name}
                     variant="outlined"
+                    onChange={(e) => setProfileData({ ...profileData, display_name: e.target.value })}
+                    name="display_name"
                     fullWidth
                   />
                 </Grid>
@@ -201,6 +285,7 @@ const AccountTab = () => {
                     fullWidth
                     id="text-location"
                     variant="outlined"
+                    name="location"
                     value={location}
                     onChange={handleChange1}
                   >
@@ -219,12 +304,13 @@ const AccountTab = () => {
                     }}
                     htmlFor="text-currency"
                   >
-                    Currency
+                    Business Type
                   </CustomFormLabel>
                   <CustomSelect
                     fullWidth
-                    id="text-currency"
+                    id="business_type"
                     variant="outlined"
+                    name="business_type"
                     value={currency}
                     onChange={handleChange2}
                   >
@@ -235,23 +321,7 @@ const AccountTab = () => {
                     ))}
                   </CustomSelect>
                 </Grid>
-                <Grid item xs={12} sm={6}>
-                  {/* 5 */}
-                  <CustomFormLabel
-                    sx={{
-                      mt: 0,
-                    }}
-                    htmlFor="text-email"
-                  >
-                    Email
-                  </CustomFormLabel>
-                  <CustomTextField
-                    id="text-email"
-                    value="info@modernize.com"
-                    variant="outlined"
-                    fullWidth
-                  />
-                </Grid>
+
                 <Grid item xs={12} sm={6}>
                   {/* 6 */}
                   <CustomFormLabel
@@ -264,8 +334,9 @@ const AccountTab = () => {
                   </CustomFormLabel>
                   <CustomTextField
                     id="text-phone"
-                    value="+91 12345 65478"
+                    value={profileData.mobile_number}
                     variant="outlined"
+                    onChange={(e) => setProfileData({ ...profileData, mobile_number: e.target.value })}
                     fullWidth
                   />
                 </Grid>
@@ -281,8 +352,9 @@ const AccountTab = () => {
                   </CustomFormLabel>
                   <CustomTextField
                     id="text-address"
-                    value="814 Howard Street, 120065, India"
+                    value={profileData.address}
                     variant="outlined"
+                    onChange={(e) => setProfileData({ ...profileData, address: e.target.value })}
                     fullWidth
                   />
                 </Grid>
@@ -291,7 +363,7 @@ const AccountTab = () => {
           </CardContent>
         </BlankCard>
         <Stack direction="row" spacing={2} sx={{ justifyContent: 'end' }} mt={3}>
-          <Button size="large" variant="contained" color="primary">
+          <Button size="large" variant="contained" color="primary" onClick={handleSave}>
             Save
           </Button>
           <Button size="large" variant="text" color="error">

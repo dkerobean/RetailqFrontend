@@ -38,7 +38,6 @@ const Profile = () => {
             } catch (error) {
                 navigate('/auth/login');
                 console.error('Error fetching user profile:', error);
-                console.log(localStorage.getItem('accessToken'))
             }
         };
 
@@ -60,8 +59,6 @@ const Profile = () => {
         navigate('/auth/login');
       } catch (error) {
         console.error('Error during logout:', error);
-        console.log("error heten login")
-        console.log(localStorage.getItem('refreshToken'));
       }
     };
 
@@ -89,7 +86,7 @@ const Profile = () => {
       >
         <Avatar
           src={`http://127.0.0.1:8000${profile.avatar}`}
-          alt={profile.display_name}
+          alt={profile.name}
           sx={{
             width: 35,
             height: 35,
