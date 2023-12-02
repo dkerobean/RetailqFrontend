@@ -130,14 +130,11 @@ useEffect(() => {
   };
 
   const handleSave = () => {
+  const formData = new FormData();
 
-    const formData = new FormData();
-
-    // Check if a new avatar file is selected
+  // Check if a new avatar file is selected
   if (avatarFile) {
-    formData.append('avatar', avatarFile,);
-    console.log(formData);
-    console.log("new file", avatarFile);
+    formData.append('avatar', avatarFile);
   }
 
   const updatedData = {
@@ -147,25 +144,26 @@ useEffect(() => {
     mobile_number: profileData.mobile_number,
     address: profileData.address,
     business_type: profileData.business_type.value,
-    avatar: avatarFile
-    };
+    // Remove the avatar field if no new file is selected
+    ...(avatarFile && { avatar: avatarFile }),
+  };
 
-    axios.put('http://127.0.0.1:8000/user/profile/view/', updatedData, {
+  axios.put('http://127.0.0.1:8000/user/profile/view/', updatedData, {
     headers: {
       'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
       'Content-Type': 'multipart/form-data',
     },
   })
-      .then(response => {
-        console.log('Profile updated successfully:', response.data);
-        console.log(updatedData);
-        handleSuccess('Profile updated successfully')
-      })
-      .catch(error => {
-        console.error('Error updating profile:', error);
-        console.log(updatedData);
-      });
-  };
+    .then(response => {
+      console.log('Profile updated successfully:', response.data);
+      console.log(updatedData);
+      handleSuccess('Profile updated successfully')
+    })
+    .catch(error => {
+      console.error('Error updating profile:', error);
+      console.log(updatedData);
+    });
+};
 
   return (
     <Grid container spacing={3}>
@@ -196,7 +194,7 @@ useEffect(() => {
             <Box textAlign="center" display="flex" justifyContent="center">
               <Box>
                 <Avatar
-                  src={`http://127.0.0.1:8000${profileData.avatar}`} // Use avatar from the API response
+                  src={avatarFile ? URL.createObjectURL(avatarFile) : `http://127.0.0.1:8000${profileData.avatar}`}
                   alt={profileData.avatar}
                   sx={{ width: 120, height: 120, margin: '0 auto' }}
                 />
