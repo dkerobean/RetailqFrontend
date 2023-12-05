@@ -16,9 +16,9 @@ const BCrumb = [
 
 const EcomProductList = () => {
   return (
-    <PageContainer title="Shop List" description="this is Shop List page">
+    <PageContainer title="Product List" description="this is prouduct List page">
       {/* breadcrumb */}
-      <Breadcrumb title="Ecom-Shop" items={BCrumb} />
+      <Breadcrumb title="Product-List" items={BCrumb} />
       <BlankCard>
         {/* ------------------------------------------- */}
         {/* Left part */}

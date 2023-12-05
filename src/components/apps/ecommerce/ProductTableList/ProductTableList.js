@@ -21,15 +21,20 @@ import {
   TextField,
   InputAdornment,
   Paper,
+  Button,
+  Grid,
 } from '@mui/material';
 
 import { visuallyHidden } from '@mui/utils';
 
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchProducts } from 'src/store/apps/eCommerce/EcommerceSlice';
+import axios from 'axios';
 import CustomCheckbox from '../../../forms/theme-elements/CustomCheckbox';
 import CustomSwitch from '../../../forms/theme-elements/CustomSwitch';
-import { IconDotsVertical, IconFilter, IconSearch, IconTrash } from '@tabler/icons';
+import { IconDotsVertical, IconEdit, IconFilter, IconSearch, IconTrash } from '@tabler/icons';
+import { AddIcCallOutlined } from '@mui/icons-material';
+import AddIcon from '@mui/icons-material/Add';
+import ChildCard from 'src/components/shared/ChildCard';
+import FormDialog from 'src/components/material-ui/dialog/FormDialog';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -70,7 +75,6 @@ const headCells = [
     disablePadding: false,
     label: 'Date',
   },
-
   {
     id: 'status',
     numeric: false,
@@ -158,6 +162,7 @@ const EnhancedTableToolbar = (props) => {
             alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
         }),
       }}
+
     >
       {numSelected > 0 ? (
         <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle2" component="div">
@@ -190,10 +195,16 @@ const EnhancedTableToolbar = (props) => {
       ) : (
         <Tooltip title="Filter list">
           <IconButton>
+            <Grid item xs={12} lg={4} sm={6} display="flex" alignItems="stretch">
+              <ChildCard title="Form">
+                <FormDialog />
+              </ChildCard>
+            </Grid>
             <IconFilter size="1.2rem" icon="filter" />
           </IconButton>
         </Tooltip>
       )}
+
     </Toolbar>
   );
 };
@@ -210,24 +221,34 @@ const ProductTableList = () => {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-  const dispatch = useDispatch();
-  //Fetch Products
-  React.useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
-
-  const getProducts = useSelector((state) => state.ecommerceReducer.products);
-
-  const [rows, setRows] = React.useState(getProducts);
+  const [rows, setRows] = React.useState([]);
   const [search, setSearch] = React.useState('');
 
   React.useEffect(() => {
-    setRows(getProducts);
-  }, [getProducts]);
+    const fetchData = async () => {
+      try {
+        // Retrieve access key from local storage
+        const accessKey = localStorage.getItem('accessToken');
+
+        const response = await axios.get('http://127.0.0.1:8000/products/list/', {
+          headers: {
+            Authorization: `Bearer ${accessKey}`,
+          },
+        });
+
+        setRows(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleSearch = (event) => {
-    const filteredRows = getProducts.filter((row) => {
-      return row.title.toLowerCase().includes(event.target.value);
+    const filteredRows = rows.filter((row) => {
+      return row.name.toLowerCase().includes(event.target.value);
     });
     setSearch(event.target.value);
     setRows(filteredRows);
@@ -243,14 +264,14 @@ const ProductTableList = () => {
   // This is for select all the row
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.title);
+      const newSelecteds = rows.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-  // This is for the single row sleect
+  // This is for the single row select
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
@@ -316,17 +337,17 @@ const ProductTableList = () => {
                 {stableSort(rows, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
-                    const isItemSelected = isSelected(row.title);
+                    const isItemSelected = isSelected(row.name);
                     const labelId = `enhanced-table-checkbox-${index}`;
 
                     return (
                       <TableRow
                         hover
-                        onClick={(event) => handleClick(event, row.title)}
+                        onClick={(event) => handleClick(event, row.name)}
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
-                        key={row.title}
+                        key={row.name}
                         selected={isItemSelected}
                       >
                         <TableCell padding="checkbox">
@@ -353,16 +374,20 @@ const ProductTableList = () => {
                               }}
                             >
                               <Typography variant="h6" fontWeight="600">
-                                {row.title}
+                                {row.name}
                               </Typography>
                               <Typography color="textSecondary" variant="subtitle2">
-                                {row.category}
+                                {row.produc}
                               </Typography>
                             </Box>
                           </Box>
                         </TableCell>
                         <TableCell>
-                          <Typography>{format(new Date(row.created), 'E, MMM d yyyy')}</Typography>
+                          <Typography>
+                            {row.created_at && typeof row.created_at === 'string'
+                              ? format(new Date(row.created_at), 'E, MMM d yyyy')
+                              : 'Invalid Date'}
+                          </Typography>
                         </TableCell>
 
                         <TableCell>
@@ -384,7 +409,7 @@ const ProductTableList = () => {
                                 ml: 1,
                               }}
                             >
-                              {row.stock ? 'InStock' : 'Out of Stock'}
+                              {row.quantity ? 'InStock' : 'Out of Stock'}
                             </Typography>
                           </Box>
                         </TableCell>
@@ -398,8 +423,19 @@ const ProductTableList = () => {
                           <Tooltip title="Edit">
                             <IconButton size="small">
                               <IconDotsVertical size="1.1rem" />
+                              <IconButton>
+                                <IconTrash width="18" />
+                              </IconButton>
                             </IconButton>
                           </Tooltip>
+                          <React.Fragment>
+                            <Tooltip title="Edit product">
+                              <IconButton>
+                                {/* Replace 'IconEdit' with your actual edit icon */}
+                                <IconEdit size="1.2rem" />
+                              </IconButton>
+                            </Tooltip>
+                          </React.Fragment>
                         </TableCell>
                       </TableRow>
                     );

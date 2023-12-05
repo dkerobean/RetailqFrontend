@@ -72,6 +72,12 @@ const Menuitems = [
     href: '/dashboards/ecommerce',
   },
   {
+    id: uniqueId(),
+    title: 'Products',
+    icon: IconBasket,
+    href: 'apps/ecommerce/eco-product-list',
+  },
+  {
     navlabel: true,
     subheader: 'Apps',
   },
