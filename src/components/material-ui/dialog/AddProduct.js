@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Box } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Box, IconButton } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CustomTextField from "../../forms/theme-elements/CustomTextField";
+import AddIcon from '@mui/icons-material/Add';
 
-const FormDialog = () => {
+const FormDialog = ({ onAddProduct }) => {
     const [open, setOpen] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
@@ -52,10 +53,15 @@ const FormDialog = () => {
 
             // Show success alert
             toast.success('Product added successfully');
-            console.log(formData);
+            console.log(response.data);
 
             // Close the dialog
             handleClose();
+
+            // Trigger the parent component callback to refresh the product list
+            if (onAddProduct) {
+                onAddProduct();
+            }
         } catch (error) {
             console.error('Error adding product:', error);
 
@@ -69,7 +75,9 @@ const FormDialog = () => {
     return (
         <>
             <Button variant="contained" color="primary" fullWidth onClick={handleClickOpen}>
-                Add Product
+                <IconButton color='inherit'>
+                    <AddIcon />
+                </IconButton>
             </Button>
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Add Product</DialogTitle>
@@ -102,14 +110,6 @@ const FormDialog = () => {
                             id="quantity"
                             label="Quantity"
                             type="number"
-                            fullWidth
-                            onChange={handleInputChange}
-                        />
-                        <CustomTextField
-                            Hidden
-                            margin="dense"
-                            id="user"
-                            label="User Id"
                             fullWidth
                             onChange={handleInputChange}
                         />

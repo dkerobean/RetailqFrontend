@@ -21,7 +21,6 @@ import {
   TextField,
   InputAdornment,
   Paper,
-  Button,
   Grid,
 } from '@mui/material';
 
@@ -32,9 +31,9 @@ import CustomCheckbox from '../../../forms/theme-elements/CustomCheckbox';
 import CustomSwitch from '../../../forms/theme-elements/CustomSwitch';
 import { IconFilter, IconSearch, IconTrash } from '@tabler/icons';
 import ChildCard from 'src/components/shared/ChildCard';
-import AddProduct from 'src/components/material-ui/dialog/AddProduct';
 import DeleteProduct from 'src/components/material-ui/dialog/DeleteProduct';
 import EditProduct from 'src/components/material-ui/dialog/EditProduct';
+import FormDialog from 'src/components/material-ui/dialog/AddProduct';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -150,10 +149,10 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected, handleSearch, search } = props;
+  const { numSelected, handleSearch, search, fetchData } = props;
 
   return (
-    <Toolbar
+<Toolbar
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
@@ -162,7 +161,6 @@ const EnhancedTableToolbar = (props) => {
             alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
         }),
       }}
-
     >
       {numSelected > 0 ? (
         <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle2" component="div">
@@ -193,24 +191,26 @@ const EnhancedTableToolbar = (props) => {
           </IconButton>
         </Tooltip>
       ) : (
-        <Tooltip>
-          <IconButton>
-            <Grid item xs={12} lg={4} sm={6} display="flex" alignItems="stretch">
-              <ChildCard>
-                <AddProduct />
-              </ChildCard>
-            </Grid>
-            <IconFilter size="1.2rem" icon="filter" />
-          </IconButton>
-        </Tooltip>
+        <Box sx={{ display: 'flex' }} >
+          <ChildCard>
+            <FormDialog onAddProduct={fetchData} />
+          </ChildCard>
+          <Tooltip title="Filter">
+            <IconButton>
+              <IconFilter size="1.2rem" icon="filter" />
+            </IconButton>
+          </Tooltip>
+        </Box>
       )}
     </Toolbar>
-
   );
 };
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
+  handleSearch: PropTypes.func.isRequired,
+  search: PropTypes.string.isRequired,
+  fetchData: PropTypes.func.isRequired,
 };
 
 const ProductTableList = () => {
@@ -224,25 +224,26 @@ const ProductTableList = () => {
   const [rows, setRows] = React.useState([]);
   const [search, setSearch] = React.useState('');
 
+  // Define fetchData function
+  const fetchData = async () => {
+    try {
+      // Retrieve access key from local storage
+      const accessKey = localStorage.getItem('accessToken');
+
+      const response = await axios.get('http://127.0.0.1:8000/products/list/', {
+        headers: {
+          Authorization: `Bearer ${accessKey}`,
+        },
+      });
+
+      setRows(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
   React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Retrieve access key from local storage
-        const accessKey = localStorage.getItem('accessToken');
-
-        const response = await axios.get('http://127.0.0.1:8000/products/list/', {
-          headers: {
-            Authorization: `Bearer ${accessKey}`,
-          },
-        });
-
-        setRows(response.data);
-        console.log(response.data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
     fetchData();
   }, []);
 
@@ -317,6 +318,7 @@ const ProductTableList = () => {
           numSelected={selected.length}
           search={search}
           handleSearch={(event) => handleSearch(event)}
+          fetchData={fetchData}
         />
         <Paper variant="outlined" sx={{ mx: 2, mt: 1 }}>
           <TableContainer>
@@ -377,7 +379,7 @@ const ProductTableList = () => {
                                 {row.name}
                               </Typography>
                               <Typography color="textSecondary" variant="subtitle2">
-                                {row.produc}
+                                {row.product_id}
                               </Typography>
                             </Box>
                           </Box>
@@ -420,9 +422,15 @@ const ProductTableList = () => {
                           </Typography>
                         </TableCell>
                         <TableCell>
-                          <DeleteProduct />
+                          <DeleteProduct
+                            productId={row.id}
+                            onDelete={() => fetchData()}
+                          />
                           <React.Fragment>
-                          <EditProduct />
+                            <EditProduct
+                              productId={row.id}
+                              onEdit={() => fetchData()}
+                            />
                           </React.Fragment>
                         </TableCell>
                       </TableRow>
