@@ -30,11 +30,11 @@ import { visuallyHidden } from '@mui/utils';
 import axios from 'axios';
 import CustomCheckbox from '../../../forms/theme-elements/CustomCheckbox';
 import CustomSwitch from '../../../forms/theme-elements/CustomSwitch';
-import { IconDotsVertical, IconEdit, IconFilter, IconSearch, IconTrash } from '@tabler/icons';
-import { AddIcCallOutlined } from '@mui/icons-material';
-import AddIcon from '@mui/icons-material/Add';
+import { IconFilter, IconSearch, IconTrash } from '@tabler/icons';
 import ChildCard from 'src/components/shared/ChildCard';
-import FormDialog from 'src/components/material-ui/dialog/FormDialog';
+import AddProduct from 'src/components/material-ui/dialog/AddProduct';
+import DeleteProduct from 'src/components/material-ui/dialog/DeleteProduct';
+import EditProduct from 'src/components/material-ui/dialog/EditProduct';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -193,19 +193,19 @@ const EnhancedTableToolbar = (props) => {
           </IconButton>
         </Tooltip>
       ) : (
-        <Tooltip title="Filter list">
+        <Tooltip>
           <IconButton>
             <Grid item xs={12} lg={4} sm={6} display="flex" alignItems="stretch">
-              <ChildCard title="Form">
-                <FormDialog />
+              <ChildCard>
+                <AddProduct />
               </ChildCard>
             </Grid>
             <IconFilter size="1.2rem" icon="filter" />
           </IconButton>
         </Tooltip>
       )}
-
     </Toolbar>
+
   );
 };
 
@@ -420,21 +420,9 @@ const ProductTableList = () => {
                           </Typography>
                         </TableCell>
                         <TableCell>
-                          <Tooltip title="Edit">
-                            <IconButton size="small">
-                              <IconDotsVertical size="1.1rem" />
-                              <IconButton>
-                                <IconTrash width="18" />
-                              </IconButton>
-                            </IconButton>
-                          </Tooltip>
+                          <DeleteProduct />
                           <React.Fragment>
-                            <Tooltip title="Edit product">
-                              <IconButton>
-                                {/* Replace 'IconEdit' with your actual edit icon */}
-                                <IconEdit size="1.2rem" />
-                              </IconButton>
-                            </Tooltip>
+                          <EditProduct />
                           </React.Fragment>
                         </TableCell>
                       </TableRow>

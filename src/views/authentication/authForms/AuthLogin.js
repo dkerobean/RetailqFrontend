@@ -87,11 +87,13 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
           handleSuccess('Login success');
           const token = response.data.access;
           const refreshToken = response.data.refresh;
-
+          const user_id = response.data.user_id;
+          
           localStorage.setItem('accessToken', token);
           localStorage.setItem('refreshToken', refreshToken);
+          localStorage.setItem('user_id', user_id);
+
           console.log('Login successful:', response.data);
-          console.log(refreshToken)
           navigate('/dashboards/modern');
         }
       } catch (error) {

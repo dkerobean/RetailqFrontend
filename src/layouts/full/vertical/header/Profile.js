@@ -35,6 +35,7 @@ const Profile = () => {
                 });
 
                 setProfile(response.data);
+
             } catch (error) {
                 navigate('/auth/login');
                 console.error('Error fetching user profile:', error);
