@@ -14,7 +14,7 @@ import Testimonial from '../../../components/landingpage/testimonial/Testimonial
 
 const Landingpage = () => {
   return (
-    <PageContainer title="Landingpage" description="this is Landingpage">
+    <PageContainer title="Home" description="This is the home page">
       <LpHeader />
       <Banner />
       <DemoSlider />

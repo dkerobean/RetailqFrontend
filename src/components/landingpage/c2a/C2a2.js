@@ -38,12 +38,12 @@ const C2a2 = () => {
           <Grid container justifyContent="space-between" spacing={3}>
             <Grid item xs={12} sm={12} lg={5}>
               <Typography variant="h2" color="background.paper" fontWeight={700} mt={4}>
-                Build your app with our highly customizable React based Dashboard
+                Join RetaillQ Today - Your Financial Freedom Awaits!
               </Typography>
 
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} mt={3}>
-                <StyledButton variant="contained" color="inherit" href="#">
-                  Buy Now
+                <StyledButton variant="contained" color="inherit" href="/auth/login">
+                  Get Started
                 </StyledButton>
                 <StyledButton2
                   variant="outlined"

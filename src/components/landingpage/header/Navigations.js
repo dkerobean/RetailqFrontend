@@ -36,7 +36,7 @@ const Navigations = () => {
 
   return (
     <>
-      <StyledButton
+      {/* <StyledButton
         color="inherit"
         variant="text"
         aria-expanded={open ? 'true' : undefined}
@@ -48,7 +48,7 @@ const Navigations = () => {
         endIcon={<IconChevronDown size="15" style={{ marginLeft: '-5px', marginTop: '2px' }} />}
       >
         Demos
-      </StyledButton>
+      </StyledButton> */}
       {open && (
         <Paper
           onMouseEnter={handleOpen}
@@ -66,7 +66,7 @@ const Navigations = () => {
           <DemosDD />
         </Paper>
       )}
-      <Box>
+      {/* <Box>
         <StyledButton
           color="inherit"
           variant="text"
@@ -108,7 +108,21 @@ const Navigations = () => {
             </Grid>
           </Paper>
         )}
-      </Box>
+      </Box> */}
+      <StyledButton
+        color="inherit"
+        variant="text"
+        href="/auth/login"
+      >
+        Blog
+      </StyledButton>
+      <StyledButton
+        color="inherit"
+        variant="text"
+        href="/auth/login"
+      >
+        Contact us
+      </StyledButton>
       <StyledButton
         color="inherit"
         variant="text"

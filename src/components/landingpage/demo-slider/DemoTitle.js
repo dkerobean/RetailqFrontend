@@ -25,7 +25,7 @@ const DemoTitle = () => {
             </AvatarGroup>
             <Typography variant="h6">52,589+</Typography>
             <Typography variant="h6" color="textSecondary">
-              developers & agencies using our templates
+              developers & agencies using our app
             </Typography>
           </Stack>
           <Typography
@@ -43,7 +43,7 @@ const DemoTitle = () => {
               },
             }}
           >
-            Production Ready & Developer Friendly Material UI React Admin Template
+           Empowering Small Ecommerce Businesses with Financial Freedom
           </Typography>
         </AnimationFadeIn>
       </Grid>

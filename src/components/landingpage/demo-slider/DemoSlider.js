@@ -37,27 +37,27 @@ const StyledChip = styled(Chip)(({ theme }) => ({
 const SliderData = [
   {
     avatar: demo1,
-    link: 'https://modernize-react-main.netlify.app/dashboards/modern',
+    link: '#',
     demo: 'Main',
   },
   {
     avatar: demo2,
-    link: 'https://modernize-react-dark.netlify.app/dashboards/ecommerce',
+    link: '#',
     demo: 'Dark',
   },
   {
     avatar: demo3,
-    link: 'https://modernize-react-horizontal.netlify.app/',
+    link: '#',
     demo: 'Horizontal',
   },
   {
     avatar: demo4,
-    link: 'https://modernize-react-firebase.netlify.app/auth/login',
+    link: '#',
     demo: 'Firebase',
   },
   {
     avatar: demo5,
-    link: 'https://modernize-react-rtl.netlify.app/dashboards/modern',
+    link: '#',
     demo: 'RTL',
   },
   {
@@ -137,7 +137,7 @@ const DemoSlider = () => {
                   </NavLink>
                 ) : (
                   <StyledButton href={slider.link} variant="outlined">
-                    Live Preview
+                   Request A Demo
                   </StyledButton>
                 )}
               </Box>

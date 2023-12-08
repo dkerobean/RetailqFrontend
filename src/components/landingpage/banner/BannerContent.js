@@ -32,7 +32,7 @@ const BannerContent = () => {
           <Typography color={'secondary'}>
             <IconRocket size={'21'} />
           </Typography>{' '}
-          Kick start your project with
+          Empowering Small Ecommerce Businesses
         </Typography>
 
         <Typography
@@ -47,11 +47,11 @@ const BannerContent = () => {
             },
           }}
         >
-          Most powerful &{' '}
+          Unleash Seamless {' '}
           <Typography component={'span'} variant="none" color={'primary'}>
-            Developer friendly
+            Financial Management
           </Typography>{' '}
-          dashboard
+          power
         </Typography>
       </motion.div>
       <Box pt={4} pb={3}>
@@ -66,8 +66,7 @@ const BannerContent = () => {
           }}
         >
           <Typography variant="h5" fontWeight={300}>
-            Modernize comes with light & dark color skins, well designed dashboards, applications
-            and pages.
+            Welcome to RetaillQ, your all-in-one solution designed to liberate your business from financial complexities.
           </Typography>
         </motion.div>
       </Box>
@@ -82,12 +81,12 @@ const BannerContent = () => {
         }}
       >
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mt={3}>
-          <StyledButton variant="contained" color="primary" href="#">
-            Buy Now
+          <StyledButton variant="contained" color="primary" href="/authh/login">
+            Get Started
           </StyledButton>
 
-          <StyledButton2 variant="outlined" component={NavLink} to="/dashboards/modern">
-            Live Preview
+          <StyledButton2 variant="outlined" component={NavLink} to="/authh/login">
+            Request A Demo
           </StyledButton2>
         </Stack>
       </motion.div>

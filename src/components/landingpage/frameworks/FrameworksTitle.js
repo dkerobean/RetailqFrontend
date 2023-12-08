@@ -16,8 +16,8 @@ const FrameworksTitle = () => {
                         lg: '43px',
                         xs: '30px'
                     }
-                }}>Increase speed of your development and
-                    launch quickly with Modernize</Typography>
+                }}>Unlock the Power of Seamless Financial Management
+                    </Typography>
             </Grid>
         </Grid>
     );

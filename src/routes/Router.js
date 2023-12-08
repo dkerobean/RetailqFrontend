@@ -70,7 +70,7 @@ const BasicTable = Loadable(lazy(() => import('../views/tables/BasicTable')));
 const CollapsibleTable = Loadable(lazy(() => import('../views/tables/CollapsibleTable')));
 const EnhancedTable = Loadable(lazy(() => import('../views/tables/EnhancedTable')));
 const FixedHeaderTable = Loadable(lazy(() => import('../views/tables/FixedHeaderTable')));
-const PaginationTable = Loadable(lazy(() => import('../views/tables/PaginationTable')));
+const PaginationTable = Loadable(lazy(() => import('../views/tables/SalesTable')));
 const SearchTable = Loadable(lazy(() => import('../views/tables/SearchTable')));
 
 // chart
@@ -161,7 +161,7 @@ const Router = [
       { path: '/tables/collapsible', element: <CollapsibleTable /> },
       { path: '/tables/enhanced', element: <EnhancedTable /> },
       { path: '/tables/fixed-header', element: <FixedHeaderTable /> },
-      { path: '/tables/pagination', element: <PaginationTable /> },
+      { path: '/tables/sales', element: <PaginationTable /> },
       { path: '/tables/search', element: <SearchTable /> },
       { path: '/charts/line-chart', element: <LineChart /> },
       { path: '/charts/gredient-chart', element: <GredientChart /> },

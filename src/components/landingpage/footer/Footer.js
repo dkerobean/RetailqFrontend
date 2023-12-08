@@ -10,11 +10,11 @@ const Footer = () => {
         <Grid item xs={12} sm={5} lg={4} textAlign="center">
           <img src={logoIcon} alt="icon" />
           <Typography fontSize="16" color="textSecondary" mt={1} mb={4}>
-            All rights reserved by Modernize. Designed & Developed by
-            <Link target="_blank" href="https://adminmart.com/">
+            All rights reserved by RetaillQ. Designed & Developed by
+            <Link target="_blank" href="https://deekietech.com/">
               <Typography color="textSecondary" component="span" display="inline">
                 {' '}
-                AdminMart
+                DeekieTech
               </Typography>{' '}
             </Link>
             .

@@ -69,12 +69,6 @@ const Menuitems = [
     id: uniqueId(),
     title: 'Products',
     icon: IconBasket,
-    href: '/dashboards/ecommerce',
-  },
-  {
-    id: uniqueId(),
-    title: 'Products',
-    icon: IconBasket,
     href: 'apps/ecommerce/eco-product-list',
   },
   {
@@ -98,16 +92,29 @@ const Menuitems = [
     children: [
       {
         id: uniqueId(),
-        title: 'Posts',
+        title: 'Dashboard',
         icon: IconPoint,
-        href: '/apps/blog/posts',
+        href: '/dashboards/ecommerce',
       },
       {
         id: uniqueId(),
-        title: 'Detail',
+        title: 'Record Sales',
         icon: IconPoint,
-        href: '/apps/blog/detail/streaming-video-way-before-it-was-cool-go-dark-tomorrow',
+        href: '/tables/sales',
       },
+      // {
+      //   id: uniqueId(),
+      //   title: 'Posts',
+      //   icon: IconPoint,
+      //   href: '/apps/blog/posts',
+      // },
+      // {
+      //   id: uniqueId(),
+      //   title: 'Detail',
+      //   icon: IconPoint,
+      //   href: '/apps/blog/detail/streaming-video-way-before-it-was-cool-go-dark-tomorrow',
+      // },
+
     ],
   },
   {
