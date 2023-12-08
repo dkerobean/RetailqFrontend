@@ -22,6 +22,8 @@ import {
   InputAdornment,
   Paper,
   Grid,
+  LinearProgress,
+  Stack,
 } from '@mui/material';
 
 import { visuallyHidden } from '@mui/utils';
@@ -364,12 +366,6 @@ const ProductTableList = () => {
 
                         <TableCell>
                           <Box display="flex" alignItems="center">
-                            <Avatar
-                              src={row.photo}
-                              alt={row.photo}
-                              variant="rounded"
-                              sx={{ width: 56, height: 56, borderRadius: '100%' }}
-                            />
                             <Box
                               sx={{
                                 ml: 2,
@@ -391,29 +387,30 @@ const ProductTableList = () => {
                               : 'Invalid Date'}
                           </Typography>
                         </TableCell>
-
                         <TableCell>
-                          <Box display="flex" alignItems="center">
-                            <Box
-                              sx={{
-                                backgroundColor: row.stock
-                                  ? (theme) => theme.palette.success.main
-                                  : (theme) => theme.palette.error.main,
-                                borderRadius: '100%',
-                                height: '10px',
-                                width: '10px',
-                              }}
-                            />
-                            <Typography
-                              color="textSecondary"
-                              variant="subtitle2"
-                              sx={{
-                                ml: 1,
-                              }}
-                            >
-                              {row.quantity ? 'InStock' : 'Out of Stock'}
+                          <Stack spacing={1}>
+                            <Typography variant="h6">
+                              {row.remaining_percentage >= 75
+                                ? 'High'
+                                : row.remaining_percentage >= 25
+                                ? 'Moderate'
+                                : 'Low'}
                             </Typography>
-                          </Box>
+                            <LinearProgress
+                              value={row.remaining_percentage}
+                              variant="determinate"
+                              color={
+                                row.remaining_percentage >= 75
+                                  ? 'success'
+                                  : row.remaining_percentage >= 25
+                                  ? 'warning'
+                                  : 'error'
+                              }
+                            />
+                            <Typography color="textSecondary" variant="h6" fontWeight="400" whiteSpace="nowrap">
+                              {row.remaining_percentage}% {' '}left
+                            </Typography>
+                          </Stack>
                         </TableCell>
 
                         <TableCell>
