@@ -71,10 +71,16 @@ const headCells = [
     label: 'Products',
   },
   {
+    id: 'SKU',
+    numeric: false,
+    disablePadding: false,
+    label: 'SKU',
+  },
+  {
     id: 'pname',
     numeric: false,
     disablePadding: false,
-    label: 'Date',
+    label: 'Date Created',
   },
   {
     id: 'status',
@@ -381,6 +387,19 @@ const ProductTableList = () => {
                           </Box>
                         </TableCell>
                         <TableCell>
+                          <Box display="flex" alignItems="center">
+                            <Box
+                              sx={{
+                                ml: 2,
+                              }}
+                            >
+                              <Typography variant="h6" fontWeight="600">
+                                {row.quantity}
+                              </Typography>
+                            </Box>
+                          </Box>
+                        </TableCell>
+                        <TableCell>
                           <Typography>
                             {row.created_at && typeof row.created_at === 'string'
                               ? format(new Date(row.created_at), 'E, MMM d yyyy')
@@ -419,17 +438,14 @@ const ProductTableList = () => {
                           </Typography>
                         </TableCell>
                         <TableCell>
-                          <DeleteProduct
-                            productId={row.id}
-                            onDelete={() => fetchData()}
-                          />
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <DeleteProduct productId={row.id} onDelete={() => fetchData()} />
                           <React.Fragment>
-                            <EditProduct
-                              productId={row.id}
-                              onEdit={() => fetchData()}
-                            />
+                            <EditProduct productId={row.id} onEdit={() => fetchData()} />
                           </React.Fragment>
-                        </TableCell>
+                        </div>
+                      </TableCell>
+
                       </TableRow>
                     );
                   })}

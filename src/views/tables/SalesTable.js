@@ -1,5 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 import { useTheme } from '@mui/material/styles';
 import {
   Typography,
@@ -16,6 +17,7 @@ import {
   IconButton,
   Paper,
   TableContainer,
+  Button,
 } from '@mui/material';
 
 import FirstPageIcon from '@mui/icons-material/FirstPage';
@@ -25,14 +27,11 @@ import LastPageIcon from '@mui/icons-material/LastPage';
 
 import Breadcrumb from '../../layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from '../../components/container/PageContainer';
-
-import img1 from '../../assets/images/profile/user-1.jpg';
-import img2 from '../../assets/images/profile/user-2.jpg';
-import img3 from '../../assets/images/profile/user-3.jpg';
-import img4 from '../../assets/images/profile/user-4.jpg';
-import img5 from '../../assets/images/profile/user-5.jpg';
 import ParentCard from '../../components/shared/ParentCard';
 import { Stack } from '@mui/system';
+import FormDialog from 'src/components/material-ui/dialog/AddSale';
+import EditSale from 'src/components/material-ui/dialog/EditSale';
+
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -91,117 +90,6 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-const rows = [
-  {
-    orderno: 'ORD - 0120145',
-    items: '5',
-    imgsrc: img1,
-    customer: 'Sunil Joshi',
-    total: '550,000',
-    status: 'Completed',
-    date: '10 Jun, 2021 09:51:40',
-  },
-  {
-    orderno: 'ORD - 0120146',
-    items: '1',
-    imgsrc: img2,
-    customer: 'John Deo',
-    total: '45,000',
-    status: 'Pending',
-    date: '10 Jun, 2021 07:46:00',
-  },
-  {
-    orderno: 'ORD - 0120460',
-    items: '3',
-    imgsrc: img3,
-    customer: 'Mily Peter',
-    total: '57,000',
-    status: 'Cancel',
-    date: '10 Jun, 2021 04:19:38',
-  },
-  {
-    orderno: 'ORD - 0124060',
-    items: '11',
-    imgsrc: img4,
-    customer: 'Andrew McDownland',
-    total: '457,000',
-    status: 'Completed',
-    date: '10 Jun, 2021 04:12:29',
-  },
-  {
-    orderno: 'ORD - 0124568',
-    items: '4',
-    imgsrc: img5,
-    customer: 'Christopher Jamil',
-    total: '120,000',
-    status: 'Pending',
-    date: '15 Apr, 2021 04:12:50',
-  },
-  {
-    orderno: 'ORD - 0120146',
-    items: '1',
-    imgsrc: img2,
-    customer: 'John Deo',
-    total: '45,000',
-    status: 'Pending',
-    date: '10 Jun, 2021 07:46:00',
-  },
-  {
-    orderno: 'ORD - 0120460',
-    items: '3',
-    imgsrc: img3,
-    customer: 'Mily Peter',
-    total: '57,000',
-    status: 'Cancel',
-    date: '10 Jun, 2021 04:19:38',
-  },
-  {
-    orderno: 'ORD - 0124060',
-    items: '11',
-    imgsrc: img4,
-    customer: 'Andrew McDownland',
-    total: '457,000',
-    status: 'Completed',
-    date: '10 Jun, 2021 04:12:29',
-  },
-  {
-    orderno: 'ORD - 0124568',
-    items: '4',
-    imgsrc: img5,
-    customer: 'Christopher Jamil',
-    total: '120,000',
-    status: 'Pending',
-    date: '15 Apr, 2021 04:12:50',
-  },
-  {
-    orderno: 'ORD - 0120145',
-    items: '5',
-    imgsrc: img1,
-    customer: 'Sunil Joshi',
-    total: '550,000',
-    status: 'Completed',
-    date: '10 Jun, 2021 09:51:40',
-  },
-  {
-    orderno: 'ORD - 0124060',
-    items: '11',
-    imgsrc: img4,
-    customer: 'Andrew McDownland',
-    total: '457,000',
-    status: 'Completed',
-    date: '10 Jun, 2021 04:12:29',
-  },
-  {
-    orderno: 'ORD - 0124568',
-    items: '4',
-    imgsrc: img5,
-    customer: 'Christopher Jamil',
-    total: '120,000',
-    status: 'Pending',
-    date: '15 Apr, 2021 04:12:50',
-  },
-].sort((a, b) => (a.calories < b.calories ? -1 : 1));
-
 const BCrumb = [
   {
     to: '/',
@@ -212,12 +100,55 @@ const BCrumb = [
   },
 ];
 
+
+
 const PaginationTable = () => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [salesData, setSalesData] = React.useState([]);
+  const [totalSales, setTotalSales] = React.useState(0);
 
-  // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    const fetchData = async () => {
+    try {
+      // Retrieve access key from local storage
+      const accessKey = localStorage.getItem('accessToken');
+
+      const response = await axios.get('http://127.0.0.1:8000/sale/all/', {
+        headers: {
+          Authorization: `Bearer ${accessKey}`,
+        },
+      });
+
+      setSalesData(response.data);
+      setTotalSales(response.data.length);
+      console.log(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchData();
+  }, []);
+
+  React.useEffect(() => {
+    const fetchSalesData = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await axios.get('http://localhost:8000/sale/all/', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setSalesData(response.data);
+        setTotalSales(response.data.length);
+      } catch (error) {
+        console.error('Error fetching sales data:', error);
+      }
+    };
+
+    fetchSalesData();
+  }, [page, rowsPerPage]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -230,101 +161,114 @@ const PaginationTable = () => {
 
   return (
     <PageContainer title="Sales" description="record a sale">
-      {/* breadcrumb */}
       <Breadcrumb title="Record Sales" items={BCrumb} />
-      {/* end breadcrumb */}
       <ParentCard title="Pagination Table">
         <Paper variant="outlined">
           <TableContainer>
             <Table
-              aria-label="custom pagination table"
+              aria-label="Record sales"
               sx={{
                 whiteSpace: 'nowrap',
               }}
             >
               <TableHead>
+              <Stack direction="row" spacing={2} mb={2} justifyContent="flex-end">
+                <FormDialog onAddSale={fetchData} />
+              </Stack>
                 <TableRow>
                   <TableCell>
-                    <Typography variant="h6">Order No.</Typography>
+                    <Typography variant="h6">Product</Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography variant="h6">Customer</Typography>
+                    <Typography variant="h6">User</Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography variant="h6">Items</Typography>
+                    <Typography variant="h6">Quantity</Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="h6">Total</Typography>
                   </TableCell>
-
                   <TableCell>
                     <Typography variant="h6">Date</Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="h6">Status</Typography>
                   </TableCell>
+                  <TableCell>
+                    <Typography variant="h6">Action</Typography>
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {(rowsPerPage > 0
-                  ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  : rows
+                  ? salesData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  : salesData
                 ).map((row) => (
-                  <TableRow key={row.orderno}>
+                  <TableRow key={row.user.id}>
                     <TableCell>
-                      <Typography variant="h6">{row.orderno}</Typography>
+                      <Typography variant="h6">{row.product_name}</Typography>
                     </TableCell>
                     <TableCell>
                       <Stack direction="row" spacing={2} alignItems="center">
                         <Avatar
-                          src={row.imgsrc}
-                          alt={row.imgsrc}
+                          src={`http://127.0.0.1:8000${row.user_profile_image}`}
+                          alt={'user_profile_image'}
                           width="30"
                         />
                         <Typography variant="h6" fontWeight="600">
-                          {row.customer}
+                          {row.user_name}
                         </Typography>
                       </Stack>
                     </TableCell>
                     <TableCell>
                       <Typography color="textSecondary" variant="h6" fontWeight="400">
-                        {row.items}
+                        {row.quantity_sold}
                       </Typography>
                     </TableCell>
-
                     <TableCell>
                       <Typography color="textSecondary" variant="h6" fontWeight="400">
                         ${row.total}
                       </Typography>
                     </TableCell>
-
                     <TableCell>
-                      <Typography variant="h6">{row.date}</Typography>
+                      <Typography variant="h6">{row.sale_date}</Typography>
                     </TableCell>
                     <TableCell>
-                      <Chip color={row.status === 'Completed' ? 'success' : row.status === 'Pending' ? 'warning' : row.status === 'Cancel'  ? 'error' : 'secondary'}
+                      <Chip
+                        color={
+                          row.status === 'Completed'
+                            ? 'success'
+                            : row.status === 'Pending'
+                            ? 'warning'
+                            : row.status === 'Cancel'
+                            ? 'error'
+                            : 'secondary'
+                        }
                         sx={{
                           borderRadius: '6px',
                         }}
                         size="small"
-                        label={row.status}
+                        label='Completed'
                       />
+                    </TableCell>
+                    <TableCell>
+                        <EditSale  productId={row.id} onEditSale={fetchData} />
                     </TableCell>
                   </TableRow>
                 ))}
 
-                {emptyRows > 0 && (
-                  <TableRow style={{ height: 53 * emptyRows }}>
+                {Array.from({ length: rowsPerPage - salesData.length }, (_, index) => (
+                  <TableRow key={index} style={{ height: 53 }}>
                     <TableCell colSpan={6} />
                   </TableRow>
-                )}
+                ))}
               </TableBody>
               <TableFooter>
                 <TableRow>
                   <TablePagination
                     rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
                     colSpan={6}
-                    count={rows.length}
+                    count={totalSales}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     SelectProps={{
