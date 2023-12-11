@@ -27,6 +27,7 @@ const EditDialog = ({ productId, onEditSale }) => {
     sale_date: '',
     user: parseInt(localStorage.getItem('user_id'), 10),
     product_id: '',
+    product_status: '',
   });
   const [products, setProducts] = useState([]);
 
@@ -54,6 +55,7 @@ const EditDialog = ({ productId, onEditSale }) => {
           product_id: response.data.product_id,
           product: response.data.product,
           product_name: response.data.product_name,
+          status: response.data.status,
         });
       } else {
         console.error('Invalid data format for sale:', response.data);
@@ -88,6 +90,13 @@ const EditDialog = ({ productId, onEditSale }) => {
     });
   };
 
+  const handleStatusChange = (event) => {
+    setFormData({
+      ...formData,
+      status: event.target.value,
+    });
+  };
+
   const handleEditSale = async () => {
     try {
       const accessKey = localStorage.getItem('accessToken');
@@ -97,6 +106,7 @@ const EditDialog = ({ productId, onEditSale }) => {
           'Content-Type': 'application/json',
         },
       });
+      console.log("here is the form data", formData)
       toast.success('Sale edited successfully');
       handleClose();
       if (onEditSale) {
@@ -130,13 +140,27 @@ const EditDialog = ({ productId, onEditSale }) => {
                 value={formData.product_id}
                 onChange={handleProductChange}
                 label="Product"
-                >
+              >
                 {products.map((product) => (
-                    <MenuItem key={product.id} value={product.id}>
+                  <MenuItem key={product.id} value={product.id}>
                     {product.product_name}
-                    </MenuItem>
+                  </MenuItem>
                 ))}
-                </Select>
+              </Select>
+            </FormControl>
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel id="status-label">Product Status</InputLabel>
+              <Select
+                labelId="status-label"
+                id="status"
+                value={formData.status}
+                onChange={handleStatusChange}
+                label="Product Status"
+              >
+                <MenuItem value="completed">Completed</MenuItem>
+                <MenuItem value="pending">Pending</MenuItem>
+                <MenuItem value="cancelled">Cancelled</MenuItem>
+              </Select>
             </FormControl>
             <TextField
               autoFocus

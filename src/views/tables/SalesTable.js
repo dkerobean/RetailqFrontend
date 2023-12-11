@@ -162,7 +162,10 @@ const PaginationTable = () => {
   return (
     <PageContainer title="Sales" description="record a sale">
       <Breadcrumb title="Record Sales" items={BCrumb} />
-      <ParentCard title="Pagination Table">
+      <Box sx={{ display: "flex-end", justifyContent: "space-between", alignItems: "center"}}>
+        <FormDialog onAddSale={fetchData} />
+      </Box>
+      <ParentCard title="Sales Table">
         <Paper variant="outlined">
           <TableContainer>
             <Table
@@ -171,10 +174,8 @@ const PaginationTable = () => {
                 whiteSpace: 'nowrap',
               }}
             >
+
               <TableHead>
-              <Stack direction="row" spacing={2} mb={2} justifyContent="flex-end">
-                <FormDialog onAddSale={fetchData} />
-              </Stack>
                 <TableRow>
                   <TableCell>
                     <Typography variant="h6">Product</Typography>
@@ -236,19 +237,19 @@ const PaginationTable = () => {
                     <TableCell>
                       <Chip
                         color={
-                          row.status === 'Completed'
+                          row.status === 'completed'
                             ? 'success'
-                            : row.status === 'Pending'
+                            : row.status === 'pending'
                             ? 'warning'
-                            : row.status === 'Cancel'
+                            : row.status === 'canceled'
                             ? 'error'
-                            : 'secondary'
+                            : 'error'
                         }
                         sx={{
                           borderRadius: '6px',
                         }}
                         size="small"
-                        label='Completed'
+                        label={row.status}
                       />
                     </TableCell>
                     <TableCell>
