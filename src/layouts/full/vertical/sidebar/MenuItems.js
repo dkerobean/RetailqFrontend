@@ -102,6 +102,18 @@ const Menuitems = [
         icon: IconPoint,
         href: '/tables/sales',
       },
+      {
+        id: uniqueId(),
+        title: 'Expenses',
+        icon: IconPoint,
+      href: '/tables/expense',
+      },
+      {
+        id: uniqueId(),
+        title: 'Income',
+        icon: IconPoint,
+        href: '/tables/sales',
+      },
       // {
       //   id: uniqueId(),
       //   title: 'Posts',
