@@ -34,7 +34,7 @@ import CustomSwitch from '../../../forms/theme-elements/CustomSwitch';
 import { IconFilter, IconSearch, IconTrash } from '@tabler/icons';
 import ChildCard from 'src/components/shared/ChildCard';
 import DeleteProduct from 'src/components/material-ui/dialog/DeleteExpense';
-import EditProduct from 'src/components/material-ui/dialog/EditProduct';
+import EditProduct from 'src/components/material-ui/dialog/EditExpense';
 import FormDialog from 'src/components/material-ui/dialog/AddExpense';
 
 function descendingComparator(a, b, orderBy) {
@@ -413,7 +413,7 @@ const ProductTableList = () => {
                         <div style={{ display: 'flex', gap: '8px' }}>
                           <DeleteProduct ExpenseId={row.id} onDelete={() => fetchData()} />
                           <React.Fragment>
-                            <EditProduct ExpenseId={row.id} onEdit={() => fetchData()} />
+                            <EditProduct expenseId={row.id} onEdit={() => fetchData()} />
                           </React.Fragment>
                         </div>
                       </TableCell>

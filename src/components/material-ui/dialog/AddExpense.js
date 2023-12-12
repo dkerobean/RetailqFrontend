@@ -23,7 +23,7 @@ const FormDialog = ({ onAdd }) => {
     amount: '',
     description: '',
     user: '',
-    category: '',
+    category: '', // Add the 'category' field to the state
   });
   const [categories, setCategories] = useState([]);
 
@@ -57,10 +57,18 @@ const FormDialog = ({ onAdd }) => {
   };
 
   const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.id]: e.target.value,
-    });
+    // Separate handling for 'category'
+    if (e.target.id === 'category') {
+      setFormData({
+        ...formData,
+        category: e.target.value,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [e.target.id]: e.target.value,
+      });
+    }
   };
 
   const handleAddProduct = async () => {
@@ -72,7 +80,7 @@ const FormDialog = ({ onAdd }) => {
         ...formData,
         user: userId,
       };
-      console.log(formDataWithUserId);
+
       // Make a POST request to your API
       const response = await axios.post(
         'http://localhost:8000/sale/expenses/',
@@ -87,7 +95,7 @@ const FormDialog = ({ onAdd }) => {
 
       // Show success alert
       toast.success('Expense added successfully');
-      console.log(response.data);
+      console.log("with user id", formDataWithUserId);
 
       // Close the dialog
       handleClose();
@@ -101,7 +109,6 @@ const FormDialog = ({ onAdd }) => {
 
       // Show error alert
       toast.error('Error adding expense. Please try again.');
-      console.log(formData);
     }
   };
 
@@ -118,6 +125,7 @@ const FormDialog = ({ onAdd }) => {
           <DialogContentText>Please enter the details of the new expense.</DialogContentText>
           <Box mt={4}>
             <CustomTextField
+              sx={{ my: 2 }}
               autoFocus
               margin="dense"
               id="amount"
@@ -127,6 +135,7 @@ const FormDialog = ({ onAdd }) => {
               onChange={handleInputChange}
             />
             <CustomTextField
+              sx={{ my: 2 }}
               autoFocus
               margin="dense"
               id="description"
@@ -135,6 +144,7 @@ const FormDialog = ({ onAdd }) => {
               onChange={handleInputChange}
             />
             <Select
+              sx={{ my: 2 }}
               label="Category"
               id="category"
               fullWidth
