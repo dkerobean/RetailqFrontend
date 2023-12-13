@@ -72,6 +72,7 @@ const EnhancedTable = Loadable(lazy(() => import('../views/tables/EnhancedTable'
 const FixedHeaderTable = Loadable(lazy(() => import('../views/tables/FixedHeaderTable')));
 const PaginationTable = Loadable(lazy(() => import('../views/tables/SalesTable')));
 const ExpenseTable = Loadable(lazy(() => import('../views/tables/ExpenseTable')));
+const TransactionTable = Loadable(lazy(() => import('../views/tables/TransactionTable')));
 const SearchTable = Loadable(lazy(() => import('../views/tables/SearchTable')));
 
 // chart
@@ -163,7 +164,8 @@ const Router = [
       { path: '/tables/enhanced', element: <EnhancedTable /> },
       { path: '/tables/fixed-header', element: <FixedHeaderTable /> },
       { path: '/tables/sales', element: <PaginationTable /> },
-      { path: '/tables/expense', element: <ExpenseTable /> }, // TODO
+      { path: '/tables/expense', element: <ExpenseTable /> },
+      { path: '/tables/transaction', element: <TransactionTable /> },// TODO
       { path: '/tables/search', element: <SearchTable /> },
       { path: '/charts/line-chart', element: <LineChart /> },
       { path: '/charts/gredient-chart', element: <GredientChart /> },

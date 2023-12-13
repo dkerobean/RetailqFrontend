@@ -19,6 +19,7 @@ import {
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { IconEdit } from '@tabler/icons';
+import { AddCircleOutlineOutlined } from '@mui/icons-material';
 
 const EditDialog = ({ expenseId, onEdit }) => {
   const [open, setOpen] = useState(false);
@@ -109,6 +110,15 @@ const EditDialog = ({ expenseId, onEdit }) => {
     });
   };
 
+    const handleSaveNewCategory = () => {
+    // Add logic to save the new category, e.g., send a request to the server
+    // and update the categories state
+
+    // For demonstration purposes, let's assume you have a function to add a new category
+    const newCategoryId = 'some_generated_id';
+    
+  };
+
   const handleEditExpense = async () => {
     try {
       const accessKey = localStorage.getItem('accessToken');
@@ -173,6 +183,11 @@ const EditDialog = ({ expenseId, onEdit }) => {
                 value={formData.category}
                 onChange={handleCategoryChange}
                 label="Category"
+                endAdornment={
+                <IconButton  onClick={handleSaveNewCategory} edge="end">
+                  <AddCircleOutlineOutlined />
+                </IconButton>
+                }
               >
                 {categories.map((category) => (
                   <MenuItem key={category.id} value={category.id}>
@@ -181,6 +196,7 @@ const EditDialog = ({ expenseId, onEdit }) => {
                 ))}
               </Select>
             </FormControl>
+
           </Box>
         </DialogContent>
         <DialogActions>

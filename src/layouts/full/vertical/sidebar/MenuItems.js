@@ -110,9 +110,9 @@ const Menuitems = [
       },
       {
         id: uniqueId(),
-        title: 'Income',
+        title: 'Transactions',
         icon: IconPoint,
-        href: '/tables/sales',
+        href: '/tables/transaction',
       },
       // {
       //   id: uniqueId(),
