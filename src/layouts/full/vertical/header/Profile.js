@@ -11,6 +11,8 @@ import unlimitedImg from 'src/assets/images/backgrounds/unlimited-bg.png';
 import Scrollbar from 'src/components/custom-scroll/Scrollbar';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = useState(null);
@@ -57,7 +59,17 @@ const Profile = () => {
         localStorage.removeItem('refreshToken');
 
         // Redirect to login page
-        navigate('/auth/login');
+        toast.success("Loggedd out", {
+          onClose: () => {
+          },
+        });
+
+        const timer = setTimeout(() => {
+          navigate('/auth/login');
+        }, 100);
+
+        return () => clearTimeout(timer);
+
       } catch (error) {
         console.error('Error during logout:', error);
       }

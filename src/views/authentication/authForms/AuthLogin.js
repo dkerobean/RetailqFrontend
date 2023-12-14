@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
-import { Box, Typography, FormGroup, FormControlLabel, Button, Stack, Divider, Snackbar } from '@mui/material';
+import { Box, Typography, FormGroup, FormControlLabel, Button, Stack, Divider } from '@mui/material';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import CustomCheckbox from '../../../components/forms/theme-elements/CustomCheckbox';
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../../components/forms/theme-elements/CustomFormLabel';
 import AuthSocialButtons from './AuthSocialButtons';
-import Alert from '@mui/material/Alert';
-import { useNavigate } from 'react-router-dom';
 
 const AuthLogin = ({ title, subtitle, subtext }) => {
   const navigate = useNavigate();
 
-  // define fields
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [formErrors, setFormErrors] = useState({
@@ -21,7 +21,6 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
     password: '',
   });
 
-  // validate form
   const validateForm = () => {
     let isValid = true;
     const errors = {
@@ -49,29 +48,10 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
     return isValid;
   };
 
-  // snackbar variables
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [openSnackbarSuccess, setOpenSnackbarSuccess] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-
-  const handleClick = (message = 'failed') => {
-    setSnackbarMessage(message);
-    setOpenSnackbar(true);
+  const handleSuccess = (message = 'Success') => {
+    toast.success(message);
   };
 
-  const handleSuccess = (message = 'success') => {
-    setSnackbarMessage(message);
-    setOpenSnackbarSuccess(true);
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenSnackbar(false);
-  };
-
-  // on submit function
   const handleLoginClick = async () => {
     if (validateForm()) {
       try {
@@ -81,14 +61,13 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
           password: password,
         };
         const response = await axios.post(apiUrl, data);
-        console.log(data);
 
         if (response.status === 200) {
           handleSuccess('Login success');
           const token = response.data.access;
           const refreshToken = response.data.refresh;
           const user_id = response.data.user_id;
-          
+
           localStorage.setItem('accessToken', token);
           localStorage.setItem('refreshToken', refreshToken);
           localStorage.setItem('user_id', user_id);
@@ -98,7 +77,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
         }
       } catch (error) {
         console.error('Error signing in:', error);
-        handleClick("Login failed; username or password doesnt match");
+        toast.error("Login failed; Email Or Password Incorrect");
       }
     } else {
       console.log('Form validation failed. Please fill in all the required fields.');
@@ -116,20 +95,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
       {subtext}
 
       <AuthSocialButtons title="Sign in with" />
-      <div className="error-alert-wrapper">
-        <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-          <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-            {snackbarMessage}
-          </Alert>
-        </Snackbar>
-      </div>
-      <div className="error-alert-wrapper">
-        <Snackbar open={openSnackbarSuccess} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-          <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-            {snackbarMessage}
-          </Alert>
-        </Snackbar>
-      </div>
+
       <Box mt={3}>
         <Divider>
           <Typography
@@ -187,7 +153,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
               color: 'primary.main',
             }}
           >
-            Forgot Password ?
+            Forgot Password?
           </Typography>
         </Stack>
       </Stack>
@@ -203,6 +169,9 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
           Sign In
         </Button>
       </Box>
+
+      <ToastContainer />
+
       {subtitle}
     </>
   );

@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Button, Divider, Autocomplete, TextField, Snackbar } from '@mui/material';
+import { Box, Typography, Button, Divider, Autocomplete, TextField } from '@mui/material';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { Stack } from '@mui/system';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../../components/forms/theme-elements/CustomFormLabel';
-import { Stack } from '@mui/system';
 import AuthSocialButtons from './AuthSocialButtons';
-import Alert from '@mui/material/Alert';
-import { useNavigate } from 'react-router-dom';
-
-
 
 const countries = [
   { code: 'GH', label: 'Ghana' },
-  { code: 'NG', label: 'Nigeria' }
+  { code: 'NG', label: 'Nigeria' },
 ];
 
 const AuthRegister = ({ title, subtitle, subtext }) => {
@@ -26,7 +25,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
     organizationName: '',
     email: '',
     password: '',
-    selectedCountry: ''
+    selectedCountry: '',
   });
 
   const navigate = useNavigate();
@@ -37,7 +36,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
       organizationName: '',
       email: '',
       password: '',
-      selectedCountry: ''
+      selectedCountry: '',
     };
 
     if (!organizationName.trim()) {
@@ -70,29 +69,22 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
     return isValid;
   };
 
-  // snackbar variables
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [openSnackbarSuccess, setOpenSnackbarSuccess] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const handleSuccess = (message = 'Success') => {
+    toast.success(message, {
+      onClose: () => {
+      },
+    });
 
-  const handleClick = (message= 'failed') => {
-    setSnackbarMessage(message);
-    setOpenSnackbar(true);
+    const timer = setTimeout(() => {
+      navigate('/auth/login');
+    }, 2000);
+
+    return () => clearTimeout(timer);
   };
 
-  const handleSuccess = (message= 'success') => {
-    setSnackbarMessage(message);
-    setOpenSnackbarSuccess(true);
+  const handleClick = (message = 'Failed') => {
+    toast.error(message);
   };
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenSnackbar(false);
-  };
-
-
 
   const handleSignUpClick = async () => {
     if (validateForm()) {
@@ -102,34 +94,32 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
           organization_name: organizationName,
           email: email,
           password: password,
-          country: selectedCountry.label
-        }
+          country: selectedCountry.label,
+        };
         const response = await axios.post(apiUrl, data);
-        console.log(data);
 
         if (response.status === 201) {
-          handleSuccess("Registration sucessfull");
+          handleSuccess('Registration successful, Login to continue');
         }
-
       } catch (error) {
-        console.log(organizationName, email, password, selectedCountry.label);
         console.error('Error signing up:', error.response.data.email);
-        handleClick(error.response.data.email);
+        handleClick("User With This Email Already Exist");
       }
     } else {
       console.log('Form validation failed. Please fill in all the required fields.');
     }
   };
 
-  // UseEffect to handle redirection after the Snackbar is closed
-useEffect(() => {
-  if (openSnackbarSuccess) {
-    const timer = setTimeout(() => {
-      navigate('/auth/login');
-    }, 1000); 
-    return () => clearTimeout(timer);
-  }
-}, [openSnackbarSuccess, navigate]);
+//   useEffect(() => {
+//   if (toast.isActive('success')) {
+//     const timer = setTimeout(() => {
+//       toast.dismiss(); // Dismiss the success toast
+//       navigate('/auth/login');
+//     }, 1000);
+//     return () => clearTimeout(timer);
+//   }
+// }, [navigate]);
+
 
   return (
     <>
@@ -141,20 +131,6 @@ useEffect(() => {
 
       {subtext}
       <AuthSocialButtons title="Sign up with" />
-      <div className="error-alert-wrapper">
-        <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-          <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-            {snackbarMessage}
-          </Alert>
-        </Snackbar>
-      </div>
-      <div className="error-alert-wrapper">
-        <Snackbar open={openSnackbarSuccess} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-          <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-            {snackbarMessage}
-          </Alert>
-        </Snackbar>
-      </div>
 
       <Box mt={3}>
         <Divider>
@@ -204,7 +180,7 @@ useEffect(() => {
                   autoComplete: 'new-password', // disable autocomplete and autofill
                 }}
                 error={!!formErrors.selectedCountry}
-              helperText={formErrors.selectedCountry}
+                helperText={formErrors.selectedCountry}
               />
             )}
           />
@@ -245,13 +221,14 @@ useEffect(() => {
           variant="contained"
           size="large"
           fullWidth
-          // component={Link}
-          // to="/auth/login"
           onClick={handleSignUpClick}
         >
           Sign Up
         </Button>
       </Box>
+
+      <ToastContainer />
+
       {subtitle}
     </>
   );

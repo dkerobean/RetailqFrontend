@@ -4,6 +4,9 @@ import { useSelector } from 'react-redux';
 import { IconPower } from '@tabler/icons';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export const Profile = () => {
   const customizer = useSelector((state) => state.customizer);
@@ -47,7 +50,17 @@ export const Profile = () => {
     localStorage.removeItem('refreshToken');
 
     // Redirect to login page
-    navigate('/auth/login');
+    toast.success("Loggedd out", {
+      onClose: () => {
+      },
+    });
+
+    const timer = setTimeout(() => {
+      navigate('/auth/login');
+    }, 100);
+
+    return () => clearTimeout(timer);
+
   } catch (error) {
     console.error('Error during logout:', error.response);
   }
