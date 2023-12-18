@@ -75,6 +75,8 @@ const Profile = () => {
       }
     };
 
+    // check if user is logged in
+
     if (!profile) {
         navigate('/auth/login');
     }else{

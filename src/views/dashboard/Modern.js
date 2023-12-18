@@ -32,7 +32,7 @@ const Modern = () => {
               <YearlyBreakup />
             </Grid>
             <Grid item xs={12} sm={6} lg={12}>
-              <MonthlyEarnings />
+              <MonthlyEarnings />   
             </Grid>
           </Grid>
         </Grid>

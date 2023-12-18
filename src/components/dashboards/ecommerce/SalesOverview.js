@@ -1,19 +1,56 @@
-import React from 'react';
+import {Reac, useEffect, useState} from 'react';
 import Chart from 'react-apexcharts';
 import { useTheme } from '@mui/material/styles';
 import { Stack, Typography, Box } from '@mui/material';
 import { IconGridDots } from '@tabler/icons';
 
 import DashboardCard from '../../shared/DashboardCard';
+import axios from 'axios';
 
 const SalesOverview = () => {
   // chart color
   const theme = useTheme();
   const primary = theme.palette.primary.main;
   const secondary = theme.palette.secondary.main;
+  const error = theme.palette.error.main;
   const primarylight = theme.palette.primary.light;
   const textColor = theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.8)' : '#2A3547';
 
+  const [salesData, setSalesData] = useState({
+    income: 0,
+    expense: 0
+  });
+
+  useEffect(() => {
+    const fetchSalesData = async () => {
+      try {
+        const userId = localStorage.getItem('user_id');
+        const accessToken = localStorage.getItem('accessToken');
+
+        console.log(accessToken);
+
+        if (!userId || !accessToken) {
+          console.error('User ID or access token not found in local storage');
+          return;
+        }
+
+        const response = await axios.get('http://localhost:8000/dashboard/details/', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
+        });
+
+        setSalesData(response.data);
+      } catch (erro){
+        console.error('Error fetching sales data', error);
+
+      }
+    };
+
+    fetchSalesData();
+  }, []);
+
+  console.log('Fetching', salesData.income);
   // chart
   const optionscolumnchart: any = {
     chart: {
@@ -25,13 +62,13 @@ const SalesOverview = () => {
       },
       height: 275,
     },
-    labels: ["Profit", "Revenue", "Expance"],
-    colors: [primary, primarylight, secondary],
+    labels: ["Income", "Expense"],
+    colors: [primary, error],
     plotOptions: {
       pie: {
-        
+
         donut: {
-          size: '89%',
+          size: '90%',
           background: 'transparent',
 
           labels: {
@@ -41,7 +78,7 @@ const SalesOverview = () => {
               offsetY: 7,
             },
             value: {
-              show: false,
+              show: true,
             },
             total: {
               show: true,
@@ -68,7 +105,7 @@ const SalesOverview = () => {
       fillSeriesColor: false,
     },
   };
-  const seriescolumnchart = [55, 55, 55];
+  const seriescolumnchart = [parseInt(salesData.income), parseInt(salesData.expense)];
 
   return (
     <DashboardCard title="Sales Overview" subtitle="Every month">
@@ -87,13 +124,13 @@ const SalesOverview = () => {
             <Box
               width={38}
               height={38}
-              bgcolor="primary.light"
+              bgcolor="primary.main"
               display="flex"
               alignItems="center"
               justifyContent="center"
             >
               <Typography
-                color="primary.main"
+                color="white"
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
@@ -103,10 +140,10 @@ const SalesOverview = () => {
             </Box>
             <Box>
               <Typography variant="h6" fontWeight="600">
-                $23,450
+                ${salesData.income}
               </Typography>
               <Typography variant="subtitle2" color="textSecondary">
-                Profit
+                Income
               </Typography>
             </Box>
           </Stack>
@@ -114,13 +151,13 @@ const SalesOverview = () => {
             <Box
               width={38}
               height={38}
-              bgcolor="secondary.light"
+              bgcolor="error.main"
               display="flex"
               alignItems="center"
               justifyContent="center"
             >
               <Typography
-                color="secondary.main"
+                color="white"
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
@@ -130,10 +167,10 @@ const SalesOverview = () => {
             </Box>
             <Box>
               <Typography variant="h6" fontWeight="600">
-                $23,450
+                ${salesData.expense}
               </Typography>
               <Typography variant="subtitle2" color="textSecondary">
-                Expance
+                Expense
               </Typography>
             </Box>
           </Stack>
