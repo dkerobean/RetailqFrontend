@@ -1,4 +1,4 @@
-import React from 'react';
+import {React, useEffect, useState} from 'react';
 import Chart from 'react-apexcharts';
 import { useTheme } from '@mui/material/styles';
 import { Stack, Typography, Avatar } from '@mui/material';
@@ -6,6 +6,7 @@ import { IconArrowUpLeft } from '@tabler/icons';
 
 import DashboardCard from '../../shared/DashboardCard';
 import icon1Img from 'src/assets/images/svgs/icon-master-card-2.svg';
+import axios from 'axios';
 
 const MonthlyEarnings = () => {
   // chart color
@@ -13,6 +14,37 @@ const MonthlyEarnings = () => {
   const primary = theme.palette.primary.main;
   const primarylight = theme.palette.primary.light;
   const successlight = theme.palette.success.light;
+
+  const [productSales, setProductSales] = useState();
+
+  useEffect(() => {
+    const fetchSalesData = async () => {
+      try {
+        const userId = localStorage.getItem('user_id');
+        const accessToken = localStorage.getItem('accessToken');
+
+        console.log(accessToken);
+
+        if (!userId || !accessToken) {
+          console.error('User ID or access token not found in local storage');
+          return;
+        }
+
+        const response = await axios.get('http://localhost:8000/dashboard/details/', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
+        });
+
+        setProductSales(response.data);
+      } catch (error){
+        console.error('Error fetching sales data', error);
+
+      }
+    };
+
+    fetchSalesData();
+  }, []);
 
   // chart
   const optionscolumnchart = {
@@ -58,7 +90,7 @@ const MonthlyEarnings = () => {
 
   return (
     <DashboardCard
-      title="Monthly Earnings"
+      title="Monthly Cashflow"
       action={
         <Avatar
           variant="rounded"
@@ -71,7 +103,7 @@ const MonthlyEarnings = () => {
       <>
         <Stack direction="row" spacing={1} alignItems="center" mb={5}>
           <Typography variant="h3" fontWeight="700">
-            $6,8120
+            ${productSales ? productSales.cash_flow : ''}
           </Typography>
           <Stack direction="row" spacing={1} mt={1} mb={2} alignItems="center">
             <Avatar sx={{ bgcolor: successlight, width: 20, height: 20 }}>

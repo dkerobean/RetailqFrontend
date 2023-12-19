@@ -1,4 +1,4 @@
-import {Reac, useEffect, useState} from 'react';
+import {React, useEffect, useState} from 'react';
 import Chart from 'react-apexcharts';
 import { useTheme } from '@mui/material/styles';
 import { Stack, Typography, Box } from '@mui/material';
@@ -41,7 +41,7 @@ const SalesOverview = () => {
         });
 
         setSalesData(response.data);
-      } catch (erro){
+      } catch (error){
         console.error('Error fetching sales data', error);
 
       }
@@ -58,7 +58,7 @@ const SalesOverview = () => {
       fontFamily: "'Plus Jakarta Sans', sans-serif;",
 
       toolbar: {
-        show: false,
+        show: true,
       },
       height: 275,
     },
@@ -78,14 +78,14 @@ const SalesOverview = () => {
               offsetY: 7,
             },
             value: {
-              show: true,
+              show: false,
             },
             total: {
               show: true,
               color: textColor,
               fontSize: '20px',
               fontWeight: '600',
-              label: '$500,458',
+              label: salesData.profit,
             },
           },
         },

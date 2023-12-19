@@ -44,14 +44,14 @@ const YearlySales = () => {
       },
     },
     xaxis: {
-      categories: [['Apr'], ['May'], ['June'], ['July'], ['Aug'], ['Sept']],
+      categories: [['Apr'], ['May'], ['June'],['Apr'],['May'], ['June'], ['July'], ['Aug'], ['Sept']],
       axisBorder: {
-        show: false,
+        show: true,
       },
     },
     yaxis: {
       labels: {
-        show: false,
+        show: true,
       },
     },
     tooltip: {

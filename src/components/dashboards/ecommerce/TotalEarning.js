@@ -1,102 +1,71 @@
-import React from 'react';
-import Chart from 'react-apexcharts';
+import { useState, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
-import { Box, Typography } from '@mui/material';
+import { Stack, Typography, Avatar } from '@mui/material';
+import { IconArrowUpLeft } from '@tabler/icons';
 
 import DashboardCard from '../../shared/DashboardCard';
+import icon1Img from 'src/assets/images/svgs/icon-paypal.svg';
+import axios from 'axios';
 
-const TotalEarning = () => {
-  // chart color
+const Payment = () => {
   const theme = useTheme();
-  const secondary = theme.palette.secondary.main;
+  const successlight = theme.palette.success.light;
 
-  // chart
-  const optionscolumnchart: any = {
-    chart: {
-      type: 'bar',
-      fontFamily: "'Plus Jakarta Sans', sans-serif;",
-      foreColor: '#adb0bb',
-      toolbar: {
-        show: false,
-      },
-      height: 55,
-      resize: true,
-      barColor: '#fff',
-      sparkline: {
-        enabled: true,
-      },
-    },
-    colors: [secondary],
-    grid: {
-      show: false,
-    },
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        startingShape: 'flat',
-        endingShape: 'flat',
-        columnWidth: '60%',
-        barHeight: '20%',
-        borderRadius: 3,
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      show: true,
-      width: 2.5,
-      colors: ['rgba(0,0,0,0.01)'],
-    },
-    xaxis: {
-      axisBorder: {
-        show: false,
-      },
-      axisTicks: {
-        show: false,
-      },
-      labels: {
-        show: false,
-      },
-    },
-    yaxis: {
-      labels: {
-        show: false,
-      },
-    },
-    axisBorder: {
-      show: false,
-    },
-    fill: {
-      opacity: 1,
-    },
-    tooltip: {
-      theme: theme.palette.mode === 'dark' ? 'dark' : 'light',
-      x: {
-        show: false,
-      },
-    },
-  };
-  const seriescolumnchart = [
-    {
-      name: '',
-      data: [4, 10, 9, 7, 9, 10, 11, 8, 10],
-    },
-  ];
+const [productSales, setProductSales] = useState();
+
+  useEffect(() => {
+    const fetchSalesData = async () => {
+      try {
+        const userId = localStorage.getItem('user_id');
+        const accessToken = localStorage.getItem('accessToken');
+
+        console.log(accessToken);
+
+        if (!userId || !accessToken) {
+          console.error('User ID or access token not found in local storage');
+          return;
+        }
+
+        const response = await axios.get('http://localhost:8000/dashboard/details/', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
+        });
+
+        setProductSales(response.data);
+      } catch (error){
+        console.error('Error fetching sales data', error);
+
+      }
+    };
+
+    fetchSalesData();
+  }, []);
 
   return (
     <DashboardCard>
       <>
-        <Typography variant="subtitle2" color="textSecondary">
-          Total Earning
+        <Avatar
+          variant="rounded"
+          sx={{ bgcolor: (theme) => theme.palette.primary.light, width: 40, height: 40 }}
+        >
+          <Avatar src={icon1Img} alt={icon1Img} sx={{ width: 24, height: 24 }} />
+        </Avatar>
+        <Typography variant="subtitle2" color="textSecondary" mt={3}>
+          Profit
         </Typography>
-        <Typography variant="h4">$78,298</Typography>
-        <Box mt={5}>
-          <Chart options={optionscolumnchart} series={seriescolumnchart} type="bar" height="55px" />
-        </Box>
+        <Typography variant="h4">${productSales ? productSales.profit : ''}</Typography>
+        <Stack direction="row" spacing={1} mt={1} alignItems="center">
+          <Avatar sx={{ bgcolor: successlight, width: 20, height: 20 }}>
+            <IconArrowUpLeft width={16} color="#39B69A" />
+          </Avatar>
+          <Typography variant="subtitle2" color="textSecondary">
+            +9%
+          </Typography>
+        </Stack>
       </>
     </DashboardCard>
   );
 };
 
-export default TotalEarning;
+export default Payment;

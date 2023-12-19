@@ -9,7 +9,7 @@ const RevenueUpdates = () => {
   // chart color
   const theme = useTheme();
   const primary = theme.palette.primary.main;
-  const secondary = theme.palette.error.main;
+  const secondary = theme.palette.secondary.main;
 
   // chart
   const optionscolumnchart: any = {
@@ -54,31 +54,31 @@ const RevenueUpdates = () => {
       tickAmount: 4,
     },
     xaxis: {
-      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'jun'],
       axisTicks: {
-        show: true,
+        show: false,
       }
     },
     tooltip: {
       theme: theme.palette.mode === 'dark' ? 'dark' : 'light',
-      fillSeriesColor: true,
+      fillSeriesColor: false,
     },
   };
   const seriescolumnchart = [
     {
-      name: 'Income',
-      data: [212455.5, 3.7, 3.2, 2.6, 1.9,2.5, 3.7, 3.2, 2.6, 1.9, 5.0],
+      name: 'Footware',
+      data: [2.5, 3.7, 3.2, 2.6, 1.9],
     },
     {
-      name: 'Expense',
-      data: [-245.8, -1.1, -3.0, -1.5, -1.9],
+      name: 'Fashionware',
+      data: [-2.8, -1.1, -3.0, -1.5, -1.9],
     },
   ];
 
   return (
     <DashboardCard
-      title="Cash Flow"
-      subtitle="Overview of cash">
+      title="Revenue Updates"
+      subtitle="Overview of Profit">
       <>
         <Stack direction="row" spacing={3}>
           <Stack direction="row" alignItems="center" spacing={1}>
@@ -87,7 +87,7 @@ const RevenueUpdates = () => {
             ></Avatar>
             <Box>
               <Typography variant="subtitle2" fontSize="12px" color="textSecondary">
-                Income
+                Footware
               </Typography>
             </Box>
           </Stack>
@@ -97,7 +97,7 @@ const RevenueUpdates = () => {
             ></Avatar>
             <Box>
               <Typography variant="subtitle2" fontSize="12px" color="textSecondary">
-                Expense
+                Fashionware
               </Typography>
             </Box>
           </Stack>
