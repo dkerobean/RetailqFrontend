@@ -44,7 +44,7 @@ const YearlySales = () => {
       },
     },
     xaxis: {
-      categories: [['Apr'], ['May'], ['June'],['Apr'],['May'], ['June'], ['July'], ['Aug'], ['Sept']],
+      categories: [['Jan'],['Feb'],['Mar'],['Apr'],['May'], ['Jun'], ['Jul'], ['Aug'], ['Sept'], ['Oct'], ['Nov'], ['Dec']],
       axisBorder: {
         show: true,
       },
@@ -61,7 +61,7 @@ const YearlySales = () => {
   const seriescolumnchart = [
     {
       name: '',
-      data: [20, 15, 30, 25, 10, 15],
+      data: [20, 15, 30, 25, 10, 15, 20, 15, 30, 25, 10, 15],
     },
   ];
 

@@ -85,7 +85,7 @@ const SalesOverview = () => {
               color: textColor,
               fontSize: '20px',
               fontWeight: '600',
-              label: salesData.profit,
+              label:'Income & Expense',
             },
           },
         },

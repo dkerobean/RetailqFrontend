@@ -3,7 +3,7 @@ import Chart from 'react-apexcharts';
 import { useTheme } from '@mui/material/styles';
 import DashboardCard from '../../shared/DashboardCard';
 import CustomSelect from '../../forms/theme-elements/CustomSelect';
-import { MenuItem, Typography, Box, Table, TableBody, TableCell, TableHead, TableRow, Avatar, Chip, TableContainer, Stack, LinearProgress } from '@mui/material';
+import { MenuItem, Typography, Box, Table, TableBody, TableCell, TableHead, TableRow, Avatar, Chip, TableContainer, Stack, LinearProgress, Button } from '@mui/material';
 import axios from 'axios';
 
 import img1 from 'src/assets/images/products/s6.jpg';
@@ -156,7 +156,7 @@ const ProductPerformances = () => {
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight={600}>
-                  Product Status
+                  Stock Level
                 </Typography>
               </TableCell>
               <TableCell>
@@ -204,29 +204,30 @@ const ProductPerformances = () => {
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <Stack spacing={1}>
-                            <Typography variant="h6">
-                              {product.product__remaining_percentage >= 75
-                                ? 'High'
-                                : product.product__remaining_percentage >= 25
-                                ? 'Moderate'
-                                : 'Low'}
-                            </Typography>
-                            <LinearProgress
-                              value={product.product__remaining_percentage}
-                              variant="determinate"
-                              color={
-                                product.product__remaining_percentage >= 75
-                                  ? 'success'
-                                  : product.product__remaining_percentage >= 25
-                                  ? 'warning'
-                                  : 'error'
-                              }
-                            />
-                            <Typography color="textSecondary" variant="h6" fontWeight="400" whiteSpace="nowrap">
-                              {product.product__remaining_percentage}% {' '}left
-                            </Typography>
-                          </Stack>
+                    <Chip
+                        color={
+                          product.product__remaining_percentage >= 90
+                            ? 'success'
+                            : product.product__remaining_percentage >= 60
+                            ? 'warning'
+                            : product.product__remaining_percentage >= 0
+                            ? 'error'
+                            : 'error'
+                        }
+                        sx={{
+                          borderRadius: '6px',
+                        }}
+                        size="small"
+                        label={
+                          product.product__remaining_percentage >= 90
+                            ? 'High'
+                            : product.product__remaining_percentage >= 60
+                            ? 'Moderate'
+                            : product.product__remaining_percentage >= 0
+                            ? 'Low'
+                            : 'Low'
+                        }
+                      />
                   </TableCell>
                   <TableCell>
                     <Typography variant="subtitle2">${product.total}</Typography>
@@ -242,7 +243,11 @@ const ProductPerformances = () => {
                   </TableCell>
                 </TableRow>
               ))}
+
           </TableBody>
+          <Button variant="outlined" color="primary" sx={{mt: "40px !important"}}>
+              View all transactions
+          </Button>
         </Table>
       </TableContainer>
     </DashboardCard>

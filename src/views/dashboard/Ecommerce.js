@@ -13,18 +13,22 @@ import ProductsSold from 'src/components/dashboards/ecommerce/ProductsSold';
 import MonthlyEarnings from 'src/components/dashboards/ecommerce/MonthlyEarnings';
 import ProductPerformances from 'src/components/dashboards/ecommerce/ProductPerformances';
 import RecentTransactions from 'src/components/dashboards/ecommerce/RecentTransactions';
+import Customers from 'src/components/dashboards/ecommerce/TopCards';
 
 const Ecommerce = () => {
   return (
     <Box mt={3}>
       <Grid container spacing={3}>
         {/* column */}
-        <Grid item xs={12} lg={8}>
+        <Grid item xs={12} lg={12}>
           <WelcomeCard />
         </Grid>
-
         {/* column */}
-        <Grid item xs={12} lg={4}>
+        <Grid item xs={12} lg={12}>
+          <Customers />
+        </Grid>
+        {/* column */}
+        {/* <Grid item xs={12} lg={4}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <Payment />
@@ -33,7 +37,7 @@ const Ecommerce = () => {
               <ProductsSold />
             </Grid>
           </Grid>
-        </Grid>
+        </Grid> */}
         <Grid item xs={12} sm={6} lg={4}>
           <RevenueUpdates />
         </Grid>
@@ -54,15 +58,15 @@ const Ecommerce = () => {
           </Grid>
         </Grid>
         {/* column */}
-        <Grid item xs={12} sm={6} lg={4}>
+        {/* <Grid item xs={12} sm={6} lg={4}>
           <WeeklyStats />
-        </Grid>
+        </Grid> */}
         {/* column */}
-        <Grid item xs={12} lg={4}>
+        <Grid item xs={12} lg={6}>
           <YearlySales />
         </Grid>
         {/* column */}
-        <Grid item xs={12} lg={4}>
+        <Grid item xs={12} lg={6}>
           <PaymentGateways />
         </Grid>
         {/* column */}

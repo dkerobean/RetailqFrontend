@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import DashboardCard from '../../shared/DashboardCard';
 import {
   Timeline,
@@ -8,90 +8,88 @@ import {
   TimelineDot,
   TimelineConnector,
   TimelineContent,
-  timelineOppositeContentClasses,
 } from '@mui/lab';
-import { Link, Typography } from '@mui/material';
+import { Button, Link, Typography } from '@mui/material';
+import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import parseISO from 'date-fns/parseISO';
 
 const RecentTransactions = () => {
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+  const fetchTransactions = async () => {
+    try {
+      const accessToken = localStorage.getItem('accessToken');
+      const response = await fetch('http://localhost:8000/dashboard/transactions/', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const data = await response.json();
+
+      if (Array.isArray(data)) {
+        setTransactions(data);
+      } else {
+        setError('Invalid data format');
+        console.log(data)
+      }
+
+      setLoading(false);
+    } catch (error) {
+      setError('Error fetching data');
+      setLoading(false);
+    }
+  };
+
+  fetchTransactions();
+}, []);
+
   return (
-    <DashboardCard title="Recent Transactions">
+   <DashboardCard title="Recent Transactions">
       <>
         <Timeline
           className="theme-timeline"
-          nonce={undefined}
-          onResize={undefined}
-          onResizeCapture={undefined}
           sx={{
             p: 0,
             mb: '-40px',
-            [`& .${timelineOppositeContentClasses.root}`]: {
-              flex: 0.5,
-              paddingLeft: 0,
-            },
           }}
         >
-          <TimelineItem>
-            <TimelineOppositeContent>09:30 am</TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot color="primary" variant="outlined" />
-              <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent>Payment received from John Doe of $385.90</TimelineContent>
-          </TimelineItem>
-          <TimelineItem>
-            <TimelineOppositeContent>10:00 am</TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot color="secondary" variant="outlined" />
-              <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent>
-              <Typography fontWeight="600">New sale recorded</Typography>{' '}
-              <Link href="/" underline="none">
-                #ML-3467
-              </Link>
-            </TimelineContent>
-          </TimelineItem>
-          <TimelineItem>
-            <TimelineOppositeContent>12:00 am</TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot color="success" variant="outlined" />
-              <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent>Payment was made of $64.95 to Michael</TimelineContent>
-          </TimelineItem>
-          <TimelineItem>
-            <TimelineOppositeContent>09:30 am</TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot color="warning" variant="outlined" />
-              <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent>
-              <Typography fontWeight="600">New sale recorded</Typography>{' '}
-              <Link href="/" underline="none">
-                #ML-3467
-              </Link>
-            </TimelineContent>
-          </TimelineItem>
-          <TimelineItem>
-            <TimelineOppositeContent>09:30 am</TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot color="error" variant="outlined" />
-              <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent>
-              <Typography fontWeight="600">New arrival recorded</Typography>{' '}
-              <Link href="/" underline="none">
-                #ML-3467
-              </Link>
-            </TimelineContent>
-          </TimelineItem>
-          <TimelineItem>
-            <TimelineOppositeContent>12:00 am</TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot color="success" variant="outlined" />
-            </TimelineSeparator>
-            <TimelineContent>Payment Done</TimelineContent>
-          </TimelineItem>
+          {loading && (
+            <TimelineItem>
+              <TimelineOppositeContent>Loading...</TimelineOppositeContent>
+            </TimelineItem>
+          )}
+          {error && (
+            <TimelineItem>
+              <TimelineOppositeContent>Error: {error}</TimelineOppositeContent>
+            </TimelineItem>
+          )}
+          {!loading &&
+            !error &&
+            transactions.map((transaction, index) => (
+              <TimelineItem key={index}>
+                <TimelineOppositeContent>
+                  {formatDistanceToNow(parseISO(transaction.created_at), { addSuffix: true })}
+                </TimelineOppositeContent>
+                <TimelineSeparator>
+                  <TimelineDot
+                    color={transaction.transaction_type === 'income' ? 'primary' : 'error'}
+                    // Use the color 'error' as a fallback if transaction_type is not valid
+                  />
+                  <TimelineConnector />
+                </TimelineSeparator>
+                <TimelineContent>
+                  <Typography>
+                    {transaction.transaction_type} recorded for ${transaction.amount}{' '}
+                  </Typography>
+                </TimelineContent>
+              </TimelineItem>
+            ))}
+            <Button variant="outlined" color="primary" sx={{mt: "40px !important", mb:4}}>
+              View all transactions
+          </Button>
         </Timeline>
       </>
     </DashboardCard>

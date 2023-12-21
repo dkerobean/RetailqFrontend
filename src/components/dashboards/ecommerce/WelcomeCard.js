@@ -1,9 +1,42 @@
-import React from 'react';
+import {useEffect, useState, React} from 'react';
 import { Box, Button, Typography, Card, CardContent, Grid } from '@mui/material';
+import axios from 'axios';
 
 import welcomeImg from 'src/assets/images/backgrounds/welcome-bg2.png';
 
 const WelcomeCard = () => {
+
+  const [userData, setUserData] = useState({});
+
+  useEffect(() => {
+    const fetchSalesData = async () => {
+      try {
+        const userId = localStorage.getItem('user_id');
+        const accessToken = localStorage.getItem('accessToken');
+
+        console.log(accessToken);
+
+        if (!userId || !accessToken) {
+          console.error('User ID or access token not found in local storage');
+          return;
+        }
+
+        const response = await axios.get('http://localhost:8000/user/profile/view/', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
+        });
+
+        setUserData(response.data);
+      } catch (error){
+        console.error('Error fetching sales data', error);
+
+      }
+    };
+
+    fetchSalesData();
+  }, []);
+
   return (
     <Card elevation={0} sx={{ backgroundColor: (theme) => theme.palette.primary.light, py: 0 }}>
       <CardContent sx={{ py: 2 }}>
@@ -17,7 +50,7 @@ const WelcomeCard = () => {
                 },
               }}
             >
-              <Typography variant="h5">Welcome back Mathew!</Typography>
+              <Typography variant="h5">Welcome back {userData.display_name}!</Typography>
               <Typography variant="subtitle2" my={2} color="textSecondary">
                 You have earned 54% more than last month which is great thing.
               </Typography>
