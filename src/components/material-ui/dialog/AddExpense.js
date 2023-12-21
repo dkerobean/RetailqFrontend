@@ -11,6 +11,7 @@ import {
   IconButton,
   Select,
   MenuItem,
+  TextField,
 } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -23,7 +24,8 @@ const FormDialog = ({ onAdd }) => {
     amount: '',
     description: '',
     user: '',
-    category: '', // Add the 'category' field to the state
+    expense_date: '',
+    category: '',
   });
   const [categories, setCategories] = useState([]);
 
@@ -57,19 +59,24 @@ const FormDialog = ({ onAdd }) => {
   };
 
   const handleInputChange = (e) => {
-    // Separate handling for 'category'
-    if (e.target.id === 'category') {
-      setFormData({
-        ...formData,
-        category: e.target.value,
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [e.target.id]: e.target.value,
-      });
-    }
-  };
+  // Separate handling for 'category'
+  if (e.target.id === 'category') {
+    setFormData({
+      ...formData,
+      category: e.target.value,
+    });
+  } else if (e.target.id === 'expense_date') {
+    setFormData({
+      ...formData,
+      expense_date: e.target.value,
+    });
+  } else {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  }
+};
 
   const handleAddProduct = async () => {
     try {
@@ -80,6 +87,8 @@ const FormDialog = ({ onAdd }) => {
         ...formData,
         user: userId,
       };
+
+      console.log("withuserid",formDataWithUserId)
 
       // Make a POST request to your API
       const response = await axios.post(
@@ -106,6 +115,7 @@ const FormDialog = ({ onAdd }) => {
       }
     } catch (error) {
       console.error('Error adding Expense:', error);
+      console.log(formData)
 
       // Show error alert
       toast.error('Error adding expense. Please try again.');
@@ -157,6 +167,16 @@ const FormDialog = ({ onAdd }) => {
                 </MenuItem>
               ))}
             </Select>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="expense_date"
+              label=""
+              type="date"
+              fullWidth
+              value={formData.expense_date}
+              onChange={handleInputChange}
+            />
           </Box>
         </DialogContent>
         <DialogActions>

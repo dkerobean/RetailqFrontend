@@ -25,6 +25,7 @@ const FormDialog = ({ onAdd }) => {
     amount: '',
     transaction_type: '',
     description: '',
+    transaction_date: '',
     user: parseInt(localStorage.getItem('user_id'), 10),
   });
 
@@ -39,7 +40,7 @@ const FormDialog = ({ onAdd }) => {
 
   const handleInputChange = (e) => {
     setFormData({
-      ...formData,  
+      ...formData,
       [e.target.id]: e.target.id === 'transaction_type' ? parseInt(e.target.value, 10) : e.target.value,
     });
   };
@@ -48,6 +49,14 @@ const FormDialog = ({ onAdd }) => {
     setFormData({
       ...formData,
       transaction_type: event.target.value,
+      user: formData.user
+    });
+  };
+
+  const handleDateChange = (event) => {
+    setFormData({
+      ...formData,
+      transaction_date: event.target.value,
       user: formData.user
     });
   };
@@ -136,6 +145,16 @@ const FormDialog = ({ onAdd }) => {
               value={formData.description}
               onChange={handleInputChange}
               sx={{ mb: 2 }}
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              id="transaction_date"
+              label=""
+              type="date"
+              fullWidth
+              value={formData.transaction_date}
+              onChange={handleDateChange}
             />
 
           </Box>
