@@ -6,9 +6,8 @@ import PageContainer from 'src/components/container/PageContainer';
 import ParentCard from 'src/components/shared/ParentCard';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import Stack from '@mui/material/Stack';
 
 const ColumnChart = () => {
   const [data, setData] = useState(null);
@@ -113,13 +112,13 @@ const ColumnChart = () => {
   return (
     <PageContainer title="Column Chart" description="this is inner page">
       <ParentCard title='Column Chart'>
-        <FormControl>
-          <InputLabel id="year-select-label">Select Year</InputLabel>
+        <Stack direction="row" alignItems="center" spacing={2} mb={2}>
+          <Typography variant="h6">Your Title Here</Typography>
           <Select
-            labelId="year-select-label"
-            id="year-select"
+            label="Select Year"
             value={selectedYear}
             onChange={handleYearChange}
+            variant="outlined"
             style={{ minWidth: '150px' }}
           >
             {Array.from({ length: 5 }, (_, index) => (
@@ -128,7 +127,7 @@ const ColumnChart = () => {
               </MenuItem>
             ))}
           </Select>
-        </FormControl>
+        </Stack>
         <Chart
           options={optionscolumnchart}
           series={seriescolumnchart}
