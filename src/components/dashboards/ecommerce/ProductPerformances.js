@@ -245,7 +245,7 @@ const ProductPerformances = () => {
               ))}
 
           </TableBody>
-          <Button href="tables/transactions/" variant="outlined" color="primary" sx={{mt: "40px !important"}}>
+          <Button href="/tables/sales/" variant="outlined" color="primary" sx={{mt: "40px !important"}}>
               View all transactions
           </Button>
         </Table>

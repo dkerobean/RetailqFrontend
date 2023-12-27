@@ -66,7 +66,6 @@ const ColumnChart = () => {
     },
     yaxis: {
       title: {
-        text: '$ (thousands)',
       },
     },
     fill: {
@@ -111,9 +110,9 @@ const ColumnChart = () => {
 
   return (
     <PageContainer title="Column Chart" description="this is inner page">
-      <ParentCard title='Column Chart'>
+      <ParentCard title={
         <Stack direction="row" alignItems="center" spacing={2} mb={2}>
-          <Typography variant="h6">Your Title Here</Typography>
+          <Typography variant="h6">Cashflow</Typography>
           <Select
             label="Select Year"
             value={selectedYear}
@@ -128,6 +127,7 @@ const ColumnChart = () => {
             ))}
           </Select>
         </Stack>
+      }>
         <Chart
           options={optionscolumnchart}
           series={seriescolumnchart}

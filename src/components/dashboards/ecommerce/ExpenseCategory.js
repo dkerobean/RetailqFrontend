@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
-import { Stack, Typography, Grid, MenuItem, Select, Chip } from '@mui/material';
+import { Stack, Typography, Grid, MenuItem, Select } from '@mui/material';
 import PageContainer from 'src/components/container/PageContainer';
 import ParentCard from 'src/components/shared/ParentCard';
 import Chart from 'react-apexcharts';
@@ -39,8 +39,12 @@ const ExpenseDashboard = () => {
   const theme = useTheme();
   const categoryColors = theme.palette.expenseColors || []; // Ensure categoryColors is an array
 
+  // Prepare data for the pie chart
+  const seriesData = expenseData[viewType]?.map((category) => category.total_amount || 0) || [];
+  const categories = expenseData[viewType]?.map((category) => category.category__name) || [];
+
   // Options for the pie chart
-const optionsPieChart = {
+  const optionsPieChart = {
     chart: {
       id: 'pie-chart',
       fontFamily: "'Plus Jakarta Sans', sans-serif",
@@ -54,38 +58,42 @@ const optionsPieChart = {
     },
     plotOptions: {
       pie: {
-        customScale: 0.8, // Adjust the size of the pie chart
+        customScale: 1.1, // Adjust the size of the pie chart
         donut: {
           size: '70px',
         },
       },
     },
-    // legend: {
-    //   show: true,
-    //   position: 'bottom',
-    //   width: '50px',
-    //   formatter: function (seriesName, opts) {
-    //     const index = opts.seriesIndex;
-    //     const categoryName = expenseData[viewType][index]?.category__name || '';
-    //     return `<div class="legend-item"><span class="legend-color" style="background-color:${categoryColors[index % categoryColors.length]}"></span>${categoryName}</div>`;
-    //   },
-    // },
-    // colors: categoryColors,
-    // tooltip: {
-    //   fillSeriesColor: true,
-    // },
+    legend: {
+      show: true,
+      position: 'bottom',
+      horizontalAlign: 'center',
+      markers: {
+        radius: 12,
+        width: 16,
+        height: 16,
+        offsetY: 0,
+      },
+      itemMargin: {
+        horizontal: 15,
+        vertical: 8,
+      },
+      labels: {
+        colors: theme.palette.text.primary,
+        useSeriesColors: true, // Set to true to use the same colors as the series
+      },
+      formatter: function (seriesName, opts) {
+        // Use the category names as legend names
+        return categories[opts.seriesIndex];
+      },
+    },
   };
-
-
-  // Prepare data for the pie chart
-  const seriesData = expenseData[viewType]?.map((category) => category.total_amount || 0) || [];
-  const categories = expenseData[viewType]?.map((category) => category.category__name) || [];
 
   return (
     <PageContainer title="Expense Dashboard" description="This is the expense dashboard page">
       <Grid container spacing={3}>
         <Grid item lg={12} md={12} xs={12}>
-          <Stack direction="row" alignItems="center" spacing={2} mb={2}>
+          <ParentCard title={<Stack direction="row" alignItems="center" spacing={2} mb={2}>
             <Typography variant="h5">Expenses</Typography>
             <Select value={viewType} onChange={(e) => setViewType(e.target.value)} variant="outlined">
               <MenuItem value="this_month">This Month</MenuItem>
@@ -93,22 +101,10 @@ const optionsPieChart = {
               <MenuItem value="this_year">This Year</MenuItem>
               <MenuItem value="this_quarter">This Quarter</MenuItem>
             </Select>
-          </Stack>
-          <ParentCard title={`Expense Distribution - ${viewType.charAt(0).toUpperCase() + viewType.slice(1)}`}>
+          </Stack>}>
             {seriesData.length > 0 ? (
               <>
                 <Chart options={optionsPieChart} series={seriesData} type="pie" height={300} />
-                {categories.length > 0 && (
-                  <Stack direction="row" justifyContent="center" spacing={1} mt={2}>
-                    {categories.map((category, index) => (
-                      <Chip
-                        key={index}
-                        label={category}
-                        style={{ backgroundColor: categoryColors[index % categoryColors.length], color: 'white' }}
-                      />
-                    ))}
-                  </Stack>
-                )}
               </>
             ) : (
               <Typography variant="body2">No data available for the selected view type.</Typography>

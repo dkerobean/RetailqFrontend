@@ -28,7 +28,7 @@ const Payment = () => {
             <IconArrowUpLeft width={16} color="#39B69A" />
           </Avatar>
           <Typography variant="subtitle2" color="textSecondary">
-            +9%
+            +19%
           </Typography>
         </Stack>
       </>

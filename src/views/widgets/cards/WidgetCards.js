@@ -3,7 +3,7 @@ import { Grid } from '@mui/material';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from 'src/components/container/PageContainer';
 
-import PaymentGateways from '../../../components/dashboards/ecommerce/PaymentGateways';
+import PaymentGateways from '../../../components/dashboards/ecommerce/ExpenseCategory';
 import RecentTransactions from '../../../components/dashboards/ecommerce/RecentTransactions';
 import TopCards from '../../..//components/dashboards/modern/TopCards';
 import UpcomingAcitivity from '../../../components/widgets/cards/UpcomingActivity';

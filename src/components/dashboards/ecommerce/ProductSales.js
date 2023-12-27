@@ -1,18 +1,40 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Chart from 'react-apexcharts';
 import { useTheme } from '@mui/material/styles';
-import { Stack, Typography,  Avatar, Box } from '@mui/material';
+import { Stack, Typography, Avatar, Box } from '@mui/material';
 import DashboardCard from '../../shared/DashboardCard';
 
 const RevenueUpdates = () => {
-
-  // chart color
+  const [salesData, setSalesData] = useState(null);
   const theme = useTheme();
   const primary = theme.palette.primary.main;
   const secondary = theme.palette.error.main;
 
-  // chart
-  const optionscolumnchart: any = {
+  useEffect(() => {
+    const fetchSalesData = async () => {
+      try {
+        const accessToken = localStorage.getItem('accessToken');
+        const response = await fetch('http://localhost:8000/dashboard/details/', {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setSalesData(data);
+        } else {
+          console.error('Failed to fetch sales data');
+        }
+      } catch (error) {
+        console.error('Error fetching sales data', error);
+      }
+    };
+
+    fetchSalesData();
+  }, []);
+
+  const optionsColumnChart = {
     chart: {
       type: 'bar',
       fontFamily: "'Plus Jakarta Sans', sans-serif;",
@@ -22,7 +44,7 @@ const RevenueUpdates = () => {
       },
       height: 320,
       offsetX: -20,
-      stacked: true,
+      stacked: false,
     },
     colors: [primary, secondary],
     plotOptions: {
@@ -46,7 +68,6 @@ const RevenueUpdates = () => {
     },
     grid: {
       show: false,
-
     },
     yaxis: {
       min: -5,
@@ -54,37 +75,30 @@ const RevenueUpdates = () => {
       tickAmount: 4,
     },
     xaxis: {
-      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+      categories: salesData?.top_selling_products?.map((product) => product.product__name) || [],
       axisTicks: {
         show: true,
-      }
+      },
     },
     tooltip: {
       theme: theme.palette.mode === 'dark' ? 'dark' : 'light',
       fillSeriesColor: true,
     },
   };
-  const seriescolumnchart = [
+
+  const seriesColumnChart = [
     {
       name: 'Income',
-      data: [212455.5, 3.7, 3.2, 2.6, 1.9,2.5, 3.7, 3.2, 2.6, 1.9, 5.0],
-    },
-    {
-      name: 'Expense',
-      data: [-245.8, -1.1, -3.0, -1.5, -1.9],
+      data: salesData?.top_selling_products?.map((product) => product.total) || [],
     },
   ];
 
   return (
-    <DashboardCard
-      title="Cash Flow"
-      subtitle="Overview of cash">
+    <DashboardCard title="Product Sales" subtitle="Overview of cash">
       <>
         <Stack direction="row" spacing={3}>
           <Stack direction="row" alignItems="center" spacing={1}>
-            <Avatar
-              sx={{ width: 9, height: 9, bgcolor: primary, svg: { display: 'none' } }}
-            ></Avatar>
+            <Avatar sx={{ width: 9, height: 9, bgcolor: primary, svg: { display: 'none' } }}></Avatar>
             <Box>
               <Typography variant="subtitle2" fontSize="12px" color="textSecondary">
                 Income
@@ -92,9 +106,7 @@ const RevenueUpdates = () => {
             </Box>
           </Stack>
           <Stack direction="row" alignItems="center" spacing={1}>
-            <Avatar
-              sx={{ width: 9, height: 9, bgcolor: secondary, svg: { display: 'none' } }}
-            ></Avatar>
+            <Avatar sx={{ width: 9, height: 9, bgcolor: secondary, svg: { display: 'none' } }}></Avatar>
             <Box>
               <Typography variant="subtitle2" fontSize="12px" color="textSecondary">
                 Expense
@@ -102,7 +114,7 @@ const RevenueUpdates = () => {
             </Box>
           </Stack>
         </Stack>
-        <Chart options={optionscolumnchart} series={seriescolumnchart} type="bar" height="320px" />
+        <Chart options={optionsColumnChart} series={seriesColumnChart} type="bar" height="320px" />
       </>
     </DashboardCard>
   );

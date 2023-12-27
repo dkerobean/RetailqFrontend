@@ -15,7 +15,7 @@ const MonthlyEarnings = () => {
   const primarylight = theme.palette.primary.light;
   const successlight = theme.palette.success.light;
 
-  const [productSales, setProductSales] = useState();
+  const [productSales, setProductSales] = useState({});
 
   useEffect(() => {
     const fetchSalesData = async () => {
@@ -103,14 +103,14 @@ const MonthlyEarnings = () => {
       <>
         <Stack direction="row" spacing={1} alignItems="center" mb={5}>
           <Typography variant="h3" fontWeight="700">
-            ${productSales ? productSales.cash_flow : ''}
+            ${productSales.cash_flow}
           </Typography>
           <Stack direction="row" spacing={1} mt={1} mb={2} alignItems="center">
             <Avatar sx={{ bgcolor: successlight, width: 20, height: 20 }}>
               <IconArrowUpLeft width={18} color="#13DEB9" />
             </Avatar>
             <Typography variant="subtitle2" color="textSecondary">
-              +9%
+              +19%
             </Typography>
           </Stack>
         </Stack>

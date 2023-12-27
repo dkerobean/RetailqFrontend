@@ -87,7 +87,7 @@ const RecentTransactions = () => {
                 </TimelineContent>
               </TimelineItem>
             ))}
-            <Button variant="outlined" color="primary" sx={{mt: "40px !important", mb:4}}>
+            <Button href="/tables/transaction" variant="outlined" color="primary" sx={{mt: "40px !important", mb:4}}>
               View all transactions
           </Button>
         </Timeline>
