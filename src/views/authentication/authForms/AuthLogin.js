@@ -73,7 +73,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
           localStorage.setItem('user_id', user_id);
 
           console.log('Login successful:', response.data);
-          navigate('/dashboards/modern');
+          navigate('/dashboards/ecommerce/');
         }
       } catch (error) {
         console.error('Error signing in:', error);
