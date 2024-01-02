@@ -38,13 +38,13 @@ const Ecommerce = () => {
             </Grid>
           </Grid>
         </Grid> */}
-        <Grid item xs={12} sm={6} lg={4}>
+        {/* <Grid item xs={12} sm={6} lg={4}>
           <RevenueUpdates />
-        </Grid>
-        <Grid item xs={12} sm={6} lg={4}>
+        </Grid> */}
+        <Grid item xs={12} sm={6} lg={6}>
           <SalesOverview />
         </Grid>
-        <Grid item xs={12} sm={6} lg={4}>
+        <Grid item xs={12} sm={6} lg={6}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <TotalEarning />

@@ -33,8 +33,7 @@ const ExpenseDashboard = () => {
     };
 
     fetchData();
-  }, []);
-
+  }, []); 
   // Chart color
   const theme = useTheme();
   const categoryColors = theme.palette.expenseColors || []; // Ensure categoryColors is an array
@@ -58,7 +57,7 @@ const ExpenseDashboard = () => {
     },
     plotOptions: {
       pie: {
-        customScale: 1.1, // Adjust the size of the pie chart
+        customScale: 1.1,
         donut: {
           size: '70px',
         },
@@ -82,10 +81,10 @@ const ExpenseDashboard = () => {
         colors: theme.palette.text.primary,
         useSeriesColors: true, // Set to true to use the same colors as the series
       },
-      formatter: function (seriesName, opts) {
-        // Use the category names as legend names
-        return categories[opts.seriesIndex];
-      },
+        formatter: function (seriesName, opts) {
+    // Use the category names as legend names
+    return categories[opts.seriesIndex];
+  },
     },
   };
 

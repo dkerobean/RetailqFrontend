@@ -108,7 +108,7 @@ const SalesOverview = () => {
   const seriescolumnchart = [parseInt(salesData.income), parseInt(salesData.expense)];
 
   return (
-    <DashboardCard title="Sales Overview" subtitle="Every month">
+    <DashboardCard title="Sales Overview" subtitle="This month">
       <>
         <Box mt={3}>
           <Chart

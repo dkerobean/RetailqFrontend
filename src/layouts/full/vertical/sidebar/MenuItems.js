@@ -62,7 +62,7 @@ const Menuitems = [
     id: uniqueId(),
     title: 'Home',
     icon: IconAperture,
-    href: '/dashboards/modern',
+    href: '/dashboards/ecommerce/',
     chipColor: 'secondary',
   },
   {
@@ -74,14 +74,6 @@ const Menuitems = [
   {
     navlabel: true,
     subheader: 'Apps',
-  },
-  {
-    id: uniqueId(),
-    title: 'Contacts',
-    icon: IconPackage,
-    chip: '2',
-    chipColor: 'secondary',
-    href: '/apps/contacts',
   },
 
   {
@@ -128,6 +120,14 @@ const Menuitems = [
       // },
 
     ],
+  },
+  {
+    id: uniqueId(),
+    title: 'Contacts',
+    icon: IconPackage,
+    chip: '2',
+    chipColor: 'secondary',
+    href: '/apps/contacts',
   },
   {
     id: uniqueId(),
