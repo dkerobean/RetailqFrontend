@@ -228,7 +228,7 @@ const PaginationTable = () => {
                     </TableCell>
                     <TableCell>
                       <Typography color="textSecondary" variant="h6" fontWeight="400">
-                        ${row.total}
+                        {row.currency}{row.total}
                       </Typography>
                     </TableCell>
                     <TableCell>

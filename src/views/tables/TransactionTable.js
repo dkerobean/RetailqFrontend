@@ -210,7 +210,7 @@ const TransactionTable = () => {
                     </TableCell>
                     <TableCell>
                       <Typography color="textSecondary" variant="h6" fontWeight="400">
-                        ${row.amount}
+                        {row.currency}{row.amount}
                       </Typography>
                     </TableCell>
                     <TableCell>

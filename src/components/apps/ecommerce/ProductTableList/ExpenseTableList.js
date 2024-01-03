@@ -387,7 +387,7 @@ const ProductTableList = () => {
                               }}
                             >
                               <Typography variant="h6" fontWeight="600">
-                                {row.amount}
+                                {row.currency}{row.amount}
                               </Typography>
                             </Box>
                           </Box>
