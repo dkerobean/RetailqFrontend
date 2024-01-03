@@ -17,6 +17,7 @@ const ProductPerformances = () => {
   const [productsData, setProductsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [products, setProducts] = useState({})
 
 
 
@@ -106,6 +107,7 @@ const ProductPerformances = () => {
       },
     });
     console.log('API response:', response.data);
+    setProducts(response.data);
     setProductsData(response.data.top_selling_products);
     setLoading(false);
   } catch (error) {
@@ -116,7 +118,10 @@ const ProductPerformances = () => {
 
   useEffect(() => {
     fetchProductData();
-  }, []); // Empty dependency array means this effect runs once after the initial render
+  }, []);
+
+  const currency = products.currency;
+  console.log("here is the product data", productsData)
 
   return (
     <DashboardCard
@@ -230,7 +235,7 @@ const ProductPerformances = () => {
                       />
                   </TableCell>
                   <TableCell>
-                    <Typography variant="subtitle2">${product.total}</Typography>
+                    <Typography variant="subtitle2">{currency}{product.total}</Typography>
                   </TableCell>
                   <TableCell>
                     <Chart

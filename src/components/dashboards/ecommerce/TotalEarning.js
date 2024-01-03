@@ -11,7 +11,7 @@ const Payment = () => {
   const theme = useTheme();
   const successlight = theme.palette.success.light;
 
-const [productSales, setProductSales] = useState();
+const [productSales, setProductSales] = useState({});
 
   useEffect(() => {
     const fetchSalesData = async () => {
@@ -42,6 +42,8 @@ const [productSales, setProductSales] = useState();
     fetchSalesData();
   }, []);
 
+  const currency = productSales.currency;
+
   return (
     <DashboardCard>
       <>
@@ -54,7 +56,7 @@ const [productSales, setProductSales] = useState();
         <Typography variant="subtitle2" color="textSecondary" mt={3}>
           Profit
         </Typography>
-        <Typography variant="h4">${productSales ? productSales.profit : ''}</Typography>
+        <Typography variant="h4">{currency}{productSales.profit}</Typography>
         <Stack direction="row" spacing={1} mt={1} alignItems="center">
           <Avatar sx={{ bgcolor: successlight, width: 20, height: 20 }}>
             <IconArrowUpLeft width={16} color="#39B69A" />

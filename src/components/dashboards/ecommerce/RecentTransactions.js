@@ -82,7 +82,7 @@ const RecentTransactions = () => {
                 </TimelineSeparator>
                 <TimelineContent>
                   <Typography>
-                    {transaction.transaction_type} recorded for ${transaction.amount}{' '}
+                    {transaction.transaction_type} recorded for {transaction.currency}{transaction.amount}{' '}
                   </Typography>
                 </TimelineContent>
               </TimelineItem>

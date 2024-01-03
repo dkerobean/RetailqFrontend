@@ -51,6 +51,7 @@ const SalesOverview = () => {
   }, []);
 
   console.log('Fetching', salesData.income);
+  const currency = salesData.currency
   // chart
   const optionscolumnchart: any = {
     chart: {
@@ -140,7 +141,7 @@ const SalesOverview = () => {
             </Box>
             <Box>
               <Typography variant="h6" fontWeight="600">
-                ${salesData.income}
+                {currency}{salesData.income}
               </Typography>
               <Typography variant="subtitle2" color="textSecondary">
                 Income
@@ -167,7 +168,7 @@ const SalesOverview = () => {
             </Box>
             <Box>
               <Typography variant="h6" fontWeight="600">
-                ${salesData.expense}
+                {currency}{salesData.expense}
               </Typography>
               <Typography variant="subtitle2" color="textSecondary">
                 Expense
