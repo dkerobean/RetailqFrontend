@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CardContent, Grid, Typography, MenuItem, Box, Avatar, Button, Stack, Snackbar, Autocomplete, TextField } from '@mui/material';
+import { CardContent, Grid, Typography, MenuItem, Box, Avatar, Button, Stack, Snackbar, Autocomplete, TextField, TextareaAutosize } from '@mui/material';
 import BlankCard from '../../shared/BlankCard';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
@@ -7,6 +7,7 @@ import CustomSelect from '../../forms/theme-elements/CustomSelect';
 import axios from 'axios';
 import Alert from '@mui/material/Alert';
 import { useNavigate } from 'react-router-dom';
+import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
 
 
 const locations = [
@@ -21,6 +22,21 @@ const locations = [
 ];
 
 const currencies = [
+  {
+    value: '$',
+    label: 'US Dollar',
+  },
+  {
+    value: '₵',
+    label: 'Ghanaian Cedi',
+  },
+  {
+    value: '₦',
+    label: 'Nigerian Naira',
+  },
+];
+
+const services = [
   {
     value: 'Retaile',
     label: 'Retaile',
@@ -97,8 +113,9 @@ useEffect(() => {
   }
 }, [openSnackbarSuccess, navigate]);
 
-  const [location, setLocation] = useState('gh'); // Set default location
-  const [currency, setCurrency] = useState('services'); // Set default currency
+  const [location, setLocation] = useState('gh');
+  const [business_type, setBusinessType] = useState('USD');
+  const  [currency, setCurrency] = useState({});
   const [profileData, setProfileData] = useState({
     name: '',
     display_name: '',
@@ -106,7 +123,8 @@ useEffect(() => {
     phone: '',
     address: '',
     avatar: '',
-    business_type: ''
+    business_type: '',
+    currency_symbol: '',
   });
   const [avatarFile, setAvatarFile] = useState(null);
 
@@ -126,8 +144,13 @@ useEffect(() => {
   };
 
   const handleChange2 = (event) => {
+    setBusinessType(event.target.value);
+  };
+
+  const handleCurrencyChange = (event) => {
     setCurrency(event.target.value);
   };
+
 
   const handleSave = () => {
   const formData = new FormData();
@@ -144,7 +167,8 @@ useEffect(() => {
     mobile_number: profileData.mobile_number,
     address: profileData.address,
     business_type: profileData.business_type.value,
-    // Remove the avatar field if no new file is selected
+    currency_symbol: profileData.currency_symbol.value,
+
     ...(avatarFile && { avatar: avatarFile }),
   };
 
@@ -348,7 +372,7 @@ useEffect(() => {
                     disablePortal
                     id="business_type"
                     name="business_type"
-                    options={currencies}
+                    options={services}
                     sx={{ width: 300 }}
                     value={profileData.business_type}
                     onChange={(event, newValue) => {
@@ -376,7 +400,7 @@ useEffect(() => {
                     fullWidth
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={6}>
                   {/* 7 */}
                   <CustomFormLabel
                     sx={{
@@ -394,6 +418,30 @@ useEffect(() => {
                     fullWidth
                   />
                 </Grid>
+                <Grid item xs={6}>
+                  {/* 7 */}
+                  <CustomFormLabel
+                    sx={{
+                      mt: 0,
+                    }}
+                    htmlFor="text-currency"
+                  >
+                    Currency
+                  </CustomFormLabel>
+                  <Autocomplete
+                    disablePortal
+                    id="business_type"
+                    name="business_type"
+                    options={currencies}
+                    sx={{ width: 300 }}
+                    value={profileData.currency_symbol}
+                    onChange={(event, newValue) => {
+                      setProfileData({ ...profileData, currency_symbol: newValue });
+                    }}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </Grid>
+
               </Grid>
             </form>
           </CardContent>
