@@ -23,6 +23,7 @@ const ColumnChart = () => {
           },
         });
         setData(response.data);
+        console.log("this is the data", response.data)
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -66,6 +67,7 @@ const ColumnChart = () => {
     },
     yaxis: {
       title: {
+        
       },
     },
     fill: {
@@ -74,7 +76,7 @@ const ColumnChart = () => {
     tooltip: {
       y: {
         formatter(val) {
-          return `$ ${val} thousands`;
+          return `${val}`;
         },
       },
       theme: 'dark',
