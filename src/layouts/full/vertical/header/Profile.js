@@ -145,7 +145,7 @@ const Profile = () => {
                   gap={1}
                 >
                   {/* <IconMail width={15} height={15} /> */}
-                  subscription
+                {profile.name}
                 </Typography>
               </Box>
             </Stack>
@@ -207,8 +207,8 @@ const Profile = () => {
                 <Box display="flex" justifyContent="space-between">
                   <Box>
                     <Typography variant="h5" mb={2}>
-                      Unlimited <br />
-                      Access
+                      {profile.subscription.plan} <br />
+                      Plan
                     </Typography>
                     <Button variant="contained" color="primary">
                       Upgrade
@@ -218,7 +218,7 @@ const Profile = () => {
                 </Box>
               </Box>
               <Button
-                to="/auth/login"
+                to="/pages/pricing/"
                 onClick={handleLogout}
                 variant="outlined"
                 color="primary"
