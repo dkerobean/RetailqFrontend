@@ -210,7 +210,11 @@ const Profile = () => {
                       {profile.subscription.plan} <br />
                       Plan
                     </Typography>
-                    <Button variant="contained" color="primary">
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => navigate('/pages/pricing')}
+                    >
                       Upgrade
                     </Button>
                   </Box>
@@ -218,7 +222,7 @@ const Profile = () => {
                 </Box>
               </Box>
               <Button
-                to="/pages/pricing/"
+                to="/auth/login"
                 onClick={handleLogout}
                 variant="outlined"
                 color="primary"

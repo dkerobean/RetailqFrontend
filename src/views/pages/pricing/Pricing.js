@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect} from 'react';
 import {
   Grid,
   Typography,
@@ -34,10 +34,41 @@ const BCrumb = [
   },
 ];
 
-const pricing = [
+
+
+const Pricing = () => {
+  const [show, setShow] = React.useState(false);
+  const [subscriptionData, setSubscriptionData] = useState([]);
+
+  // Fetch subscription data from the API
+  useEffect(() => {
+    const fetchSubscriptionData = async () => {
+      try {
+        const accessToken = localStorage.getItem('accessToken');
+        const response = await fetch('http://localhost:8000/subscription/all/', {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setSubscriptionData(data);
+        } else {
+          console.error('Failed to fetch subscription data');
+        }
+      } catch (error) {
+        console.error('Error fetching subscription data:', error);
+      }
+    };
+
+    fetchSubscriptionData();
+  }, []);
+
+  const pricing = [
   {
     id: 1,
-    package: 'Silver',
+    package: 'Free',
     plan: 'Free',
     monthlyplan: 'Free',
     avatar: pck1,
@@ -68,8 +99,8 @@ const pricing = [
   },
   {
     id: 2,
-    package: 'Bronze',
-    monthlyplan: 10.99,
+    package: 'Standard',
+    monthlyplan: subscriptionData.find(item => item.plan === 'standard_monthly')?.price || 0,
     avatar: pck2,
     badge: true,
     btntext: 'Choose Bronze',
@@ -98,8 +129,8 @@ const pricing = [
   },
   {
     id: 3,
-    package: 'Gold',
-    monthlyplan: 22.99,
+    package: 'Premium',
+    monthlyplan: subscriptionData.find(item => item.plan === 'premium_monthly')?.price || 0,
     avatar: pck3,
     badge: false,
     btntext: 'Choose Gold',
@@ -128,8 +159,7 @@ const pricing = [
   },
 ];
 
-const Pricing = () => {
-  const [show, setShow] = React.useState(false);
+  console.log('here is the subscription data', subscriptionData);
 
   const yearlyPrice = (a, b) => a * b;
 
