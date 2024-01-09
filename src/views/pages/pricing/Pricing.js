@@ -95,12 +95,36 @@ const Pricing = () => {
 
   const handlePaystackSuccess = (response) => {
     showToast(`Payment successful! Transaction ID: ${response.transaction}`, 'success');
-    // Add any other success handling logic here
+    const selectedPlan = pricing.find((price) => price.btntext === response.metadata.plan);
+    handleUpgradeSubscription(selectedPlan);
+  };
+
+  const handleUpgradeSubscription = async (selectedPlan) => {
+      try {
+        const accessToken = localStorage.getItem('accessToken');
+
+        const upgradeResponse = await fetch('http://localhost:8000/subscription/upgrade/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({ new_plan: selectedPlan.plan }),
+        });
+        console.log("handle upgrade", selectedPlan)
+        if (upgradeResponse.ok) {
+          showToast('Subscription upgraded successfully!', 'success');
+          // Add any additional logic you need after the subscription upgrade
+        } else {
+          showToast('Failed to upgrade subscription', 'error');
+        }
+      } catch (error) {
+        showToast(`Error upgrading subscription: ${error.message}`, 'error');
+    }
   };
 
   const handlePaystackError = (error) => {
     showToast(`Payment failed! ${error.message}`, 'error');
-    // Add any other error handling logic here
   };
 
   const handlePaystackClose = () => {
