@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Grid,
   Typography,
@@ -16,13 +16,14 @@ import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/material/styles';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from 'src/components/container/PageContainer';
-
 import { IconCheck, IconX } from '@tabler/icons';
 import BlankCard from '../../../components/shared/BlankCard';
-
 import pck1 from 'src/assets/images/backgrounds/silver.png';
 import pck2 from 'src/assets/images/backgrounds/bronze.png';
 import pck3 from 'src/assets/images/backgrounds/gold.png';
+import { PaystackButton } from 'react-paystack';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const BCrumb = [
   {
@@ -34,11 +35,10 @@ const BCrumb = [
   },
 ];
 
-
-
 const Pricing = () => {
   const [show, setShow] = React.useState(false);
   const [subscriptionData, setSubscriptionData] = useState([]);
+  const [userProfile, setUserProfile] = useState([]);
 
   // Fetch subscription data from the API
   useEffect(() => {
@@ -65,101 +65,142 @@ const Pricing = () => {
     fetchSubscriptionData();
   }, []);
 
-  const pricing = [
-  {
-    id: 1,
-    package: 'Free',
-    plan: 'Free',
-    monthlyplan: 'Free',
-    avatar: pck1,
-    badge: false,
-    btntext: 'Choose Silver',
-    rules: [
-      {
-        limit: true,
-        title: '3 Members',
-      },
-      {
-        limit: true,
-        title: 'Single Device',
-      },
-      {
-        limit: false,
-        title: '50GB Storage',
-      },
-      {
-        limit: false,
-        title: 'Monthly Backups',
-      },
-      {
-        limit: false,
-        title: 'Permissions & workflows',
-      },
-    ],
-  },
-  {
-    id: 2,
-    package: 'Standard',
-    monthlyplan: subscriptionData.find(item => item.plan === 'standard_monthly')?.price || 0,
-    avatar: pck2,
-    badge: true,
-    btntext: 'Choose Bronze',
-    rules: [
-      {
-        limit: true,
-        title: '5 Members',
-      },
-      {
-        limit: true,
-        title: 'Multiple Device',
-      },
-      {
-        limit: true,
-        title: '80GB Storage',
-      },
-      {
-        limit: false,
-        title: 'Monthly Backups',
-      },
-      {
-        limit: false,
-        title: 'Permissions & workflows',
-      },
-    ],
-  },
-  {
-    id: 3,
-    package: 'Premium',
-    monthlyplan: subscriptionData.find(item => item.plan === 'premium_monthly')?.price || 0,
-    avatar: pck3,
-    badge: false,
-    btntext: 'Choose Gold',
-    rules: [
-      {
-        limit: true,
-        title: 'Unlimited Members',
-      },
-      {
-        limit: true,
-        title: 'Multiple Device',
-      },
-      {
-        limit: true,
-        title: '150GB Storage',
-      },
-      {
-        limit: true,
-        title: 'Monthly Backups',
-      },
-      {
-        limit: true,
-        title: 'Permissions & workflows',
-      },
-    ],
-  },
-];
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const accessToken = localStorage.getItem('accessToken');
+        const response = await fetch('http://localhost:8000/user/profile/view/', {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
 
-  console.log('here is the subscription data', subscriptionData);
+        if (response.ok) {
+          const data = await response.json();
+          setUserProfile(data);
+        } else {
+          console.error('Failed to fetch profile');
+        }
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+      }
+    };
+
+    fetchProfileData();
+  }, []);
+
+  const showToast = (message, type) => {
+    toast[type](message);
+  };
+
+  const handlePaystackSuccess = (response) => {
+    showToast(`Payment successful! Transaction ID: ${response.transaction}`, 'success');
+    // Add any other success handling logic here
+  };
+
+  const handlePaystackError = (error) => {
+    showToast(`Payment failed! ${error.message}`, 'error');
+    // Add any other error handling logic here
+  };
+
+  const handlePaystackClose = () => {
+    showToast('Payment closed!', 'info');
+    // Add any other close handling logic here
+  };
+
+  const pricing = [
+    {
+      id: 1,
+      package: 'Free',
+      plan: 'Free',
+      monthlyplan: 'Free',
+      avatar: pck1,
+      badge: false,
+      btntext: 'Choose Free',
+      rules: [
+        {
+          limit: true,
+          title: '3 Members',
+        },
+        {
+          limit: true,
+          title: 'Single Device',
+        },
+        {
+          limit: false,
+          title: '50GB Storage',
+        },
+        {
+          limit: false,
+          title: 'Monthly Backups',
+        },
+        {
+          limit: false,
+          title: 'Permissions & workflows',
+        },
+      ],
+    },
+    {
+      id: 2,
+      package: 'Standard',
+      monthlyplan: subscriptionData.find((item) => item.plan === 'standard_monthly')?.price || 0,
+      avatar: pck2,
+      badge: true,
+      btntext: 'Choose Standard',
+      rules: [
+        {
+          limit: true,
+          title: '5 Members',
+        },
+        {
+          limit: true,
+          title: 'Multiple Device',
+        },
+        {
+          limit: true,
+          title: '80GB Storage',
+        },
+        {
+          limit: false,
+          title: 'Monthly Backups',
+        },
+        {
+          limit: false,
+          title: 'Permissions & workflows',
+        },
+      ],
+    },
+    {
+      id: 3,
+      package: 'Premium',
+      monthlyplan: subscriptionData.find((item) => item.plan === 'premium_monthly')?.price || 0,
+      avatar: pck3,
+      badge: false,
+      btntext: 'Choose Premium',
+      rules: [
+        {
+          limit: true,
+          title: 'Unlimited Members',
+        },
+        {
+          limit: true,
+          title: 'Multiple Device',
+        },
+        {
+          limit: true,
+          title: '150GB Storage',
+        },
+        {
+          limit: true,
+          title: 'Monthly Backups',
+        },
+        {
+          limit: true,
+          title: 'Permissions & workflows',
+        },
+      ],
+    },
+  ];
 
   const yearlyPrice = (a, b) => a * b;
 
@@ -177,8 +218,18 @@ const Pricing = () => {
     fontSize: '11px',
   });
 
+  const paystackProps = {
+    email: userProfile.user ? userProfile.user.email : '',
+    currency: 'GHS',
+    publicKey: process.env.REACT_APP_PS_PUBLIC_TEST_KEY,
+    onSuccess: handlePaystackSuccess,
+    onError: handlePaystackError,
+    onClose: handlePaystackClose,
+  };
+
   return (
-    <PageContainer title="Pricing" description="this is Pricing page">
+    <PageContainer title="Pricing" description="This is the Pricing page">
+      <ToastContainer />
       {/* breadcrumb */}
       <Breadcrumb title="Pricing" items={BCrumb} />
       {/* end breadcrumb */}
@@ -282,15 +333,27 @@ const Pricing = () => {
                     ))}
                   </List>
                 </Box>
-
-                <Button
+                {/* <Button
                   sx={{ width: '100%', mt: 3 }}
                   variant="contained"
                   size="large"
                   color="primary"
                 >
                   {price.btntext}
-                </Button>
+                </Button> */}
+                {price.plan !== 'Free' && (
+                  <PaystackButton
+                    text = {price.btntext}
+                    amount={show ? yearlyPrice(`${price.monthlyplan * 100}`, 12) : price.monthlyplan * 100}
+                    {...paystackProps}
+                    sx={{ width: '100%', mt: 3 }}
+                    variant="contained"
+                    size="large"
+                    color="primary"
+                  >
+                  </PaystackButton>
+                )}
+
               </CardContent>
             </BlankCard>
           </Grid>
