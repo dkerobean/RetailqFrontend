@@ -92,14 +92,23 @@ const Pricing = () => {
   const showToast = (message, type) => {
     toast[type](message);
   };
+  const planName = 'premium'
 
-  const handlePaystackSuccess = (response) => {
-    showToast(`Payment successful! Transaction ID: ${response.transaction}`, 'success');
-    const selectedPlan = pricing.find((price) => price.btntext === response.metadata.plan);
-    handleUpgradeSubscription(selectedPlan);
+  const handleUpgradeWrapper = (plan) => {
+  console.log('Upgrade button clicked for plan:', plan);
+  handleUpgradeSubscription(plan);
+};
+
+  const handlePaystackSuccess = (response, planName) => {
+    console.log('response: ', response, planName)
+    if (response.message === 'Approved') {
+      showToast(`Payment successful! Transaction ID: ${response.transaction}`, 'success');
+      handleUpgradeSubscription();
+    }
   };
 
-  const handleUpgradeSubscription = async (selectedPlan) => {
+  const handleUpgradeSubscription = async (plan) => {
+    console.log(plan)
       try {
         const accessToken = localStorage.getItem('accessToken');
 
@@ -109,12 +118,10 @@ const Pricing = () => {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${accessToken}`,
           },
-          body: JSON.stringify({ new_plan: selectedPlan.plan }),
+          body: JSON.stringify({ new_plan: 'standard' }),
         });
-        console.log("handle upgrade", selectedPlan)
         if (upgradeResponse.ok) {
           showToast('Subscription upgraded successfully!', 'success');
-          // Add any additional logic you need after the subscription upgrade
         } else {
           showToast('Failed to upgrade subscription', 'error');
         }
@@ -129,8 +136,9 @@ const Pricing = () => {
 
   const handlePaystackClose = () => {
     showToast('Payment closed!', 'info');
-    // Add any other close handling logic here
   };
+
+
 
   const pricing = [
     {
@@ -247,7 +255,6 @@ const Pricing = () => {
     currency: 'GHS',
     publicKey: process.env.REACT_APP_PS_PUBLIC_TEST_KEY,
     onSuccess: handlePaystackSuccess,
-    onError: handlePaystackError,
     onClose: handlePaystackClose,
   };
 
@@ -366,11 +373,13 @@ const Pricing = () => {
                   {price.btntext}
                 </Button> */}
                 {price.plan !== 'Free' && (
+
                   <PaystackButton
                     text = {price.btntext}
                     amount={show ? yearlyPrice(`${price.monthlyplan * 100}`, 12) : price.monthlyplan * 100}
                     {...paystackProps}
                     sx={{ width: '100%', mt: 3 }}
+                    onToken={(response) => handleUpgradeWrapper(price.plan)}
                     variant="contained"
                     size="large"
                     color="primary"
