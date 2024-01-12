@@ -35,10 +35,12 @@ const BCrumb = [
   },
 ];
 
+
 const Pricing = () => {
   const [show, setShow] = React.useState(false);
   const [subscriptionData, setSubscriptionData] = useState([]);
   const [userProfile, setUserProfile] = useState([]);
+  const [selectedPlan, setSelectedPlan] = useState('');
 
   // Fetch subscription data from the API
   useEffect(() => {
@@ -92,23 +94,15 @@ const Pricing = () => {
   const showToast = (message, type) => {
     toast[type](message);
   };
-  const planName = 'premium'
 
-  const handleUpgradeWrapper = (plan) => {
-  console.log('Upgrade button clicked for plan:', plan);
-  handleUpgradeSubscription(plan);
-};
-
-  const handlePaystackSuccess = (response, planName) => {
-    console.log('response: ', response, planName)
+  const handlePaystackSuccess = (response, plan) => {
     if (response.message === 'Approved') {
       showToast(`Payment successful! Transaction ID: ${response.transaction}`, 'success');
-      handleUpgradeSubscription();
+      handleUpgradeSubscription(plan);
     }
   };
 
   const handleUpgradeSubscription = async (plan) => {
-    console.log(plan)
       try {
         const accessToken = localStorage.getItem('accessToken');
 
@@ -118,7 +112,7 @@ const Pricing = () => {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${accessToken}`,
           },
-          body: JSON.stringify({ new_plan: 'standard' }),
+          body: JSON.stringify({ new_plan: plan }),
         });
         if (upgradeResponse.ok) {
           showToast('Subscription upgraded successfully!', 'success');
@@ -152,23 +146,23 @@ const Pricing = () => {
       rules: [
         {
           limit: true,
-          title: '3 Members',
+          title: '1 Member',
         },
         {
           limit: true,
-          title: 'Single Device',
+          title: 'Transaction Tracking',
+        },
+        {
+          limit: true,
+          title: 'Invoice Management',
+        },
+        {
+          limit: true,
+          title: 'User Support',
         },
         {
           limit: false,
-          title: '50GB Storage',
-        },
-        {
-          limit: false,
-          title: 'Monthly Backups',
-        },
-        {
-          limit: false,
-          title: 'Permissions & workflows',
+          title: 'Data Export',
         },
       ],
     },
@@ -182,23 +176,43 @@ const Pricing = () => {
       rules: [
         {
           limit: true,
-          title: '5 Members',
+          title: '3 Members',
         },
         {
           limit: true,
-          title: 'Multiple Device',
+          title: 'Financial Reports',
         },
         {
           limit: true,
-          title: '80GB Storage',
+          title: 'Notification System',
         },
         {
           limit: false,
-          title: 'Monthly Backups',
+          title: 'User Dashboard',
         },
         {
           limit: false,
-          title: 'Permissions & workflows',
+          title: 'Integration with Payment Gateways',
+        },
+        {
+          limit: false,
+          title: 'Multi-Currency Support',
+        },
+        {
+          limit: false,
+          title: 'Inventory Management',
+        },
+        {
+          limit: false,
+          title: 'CRM',
+        },
+        {
+          limit: false,
+          title: 'Mobile Accessibility',
+        },
+         {
+          limit: false,
+          title: 'File Uploads',
         },
       ],
     },
@@ -216,19 +230,43 @@ const Pricing = () => {
         },
         {
           limit: true,
-          title: 'Multiple Device',
+          title: 'Expense Categories',
         },
         {
           limit: true,
-          title: '150GB Storage',
+          title: 'Bank Integration',
         },
         {
           limit: true,
-          title: 'Monthly Backups',
+          title: 'Budgeting',
         },
         {
           limit: true,
-          title: 'Permissions & workflows',
+          title: 'Tax Tracking',
+        },
+        {
+          limit: true,
+          title: 'Multi-Currency Support',
+        },
+        {
+          limit: true,
+          title: 'Inventory Management',
+        },
+        {
+          limit: true,
+          title: 'CRM',
+        },
+        {
+          limit: true,
+          title: 'Mobile Accessibility',
+        },
+         {
+          limit: true,
+          title: 'File Uploads',
+        },
+        {
+          limit: true,
+          title: 'Forecasting',
         },
       ],
     },
@@ -253,6 +291,7 @@ const Pricing = () => {
   const paystackProps = {
     email: userProfile.user ? userProfile.user.email : '',
     currency: 'GHS',
+    phone: 'sss',
     publicKey: process.env.REACT_APP_PS_PUBLIC_TEST_KEY,
     onSuccess: handlePaystackSuccess,
     onClose: handlePaystackClose,
@@ -379,10 +418,13 @@ const Pricing = () => {
                     amount={show ? yearlyPrice(`${price.monthlyplan * 100}`, 12) : price.monthlyplan * 100}
                     {...paystackProps}
                     sx={{ width: '100%', mt: 3 }}
-                    onToken={(response) => handleUpgradeWrapper(price.plan)}
                     variant="contained"
                     size="large"
                     color="primary"
+                    onSuccess={(response) => {
+                      setSelectedPlan(price.package);
+                      handlePaystackSuccess(response, price.package);
+                    }}
                   >
                   </PaystackButton>
                 )}
