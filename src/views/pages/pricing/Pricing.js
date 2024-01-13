@@ -105,6 +105,7 @@ const Pricing = () => {
   const handleUpgradeSubscription = async (plan) => {
       try {
         const accessToken = localStorage.getItem('accessToken');
+        console.log("here is the pla:", plan)
 
         const upgradeResponse = await fetch('http://localhost:8000/subscription/upgrade/', {
           method: 'POST',
@@ -117,7 +118,7 @@ const Pricing = () => {
         if (upgradeResponse.ok) {
           showToast('Subscription upgraded successfully!', 'success');
         } else {
-          showToast('Failed to upgrade subscription', 'error');
+          showToast('Failed to upgrade subscriptions', 'error');
         }
       } catch (error) {
         showToast(`Error upgrading subscription: ${error.message}`, 'error');
@@ -161,7 +162,7 @@ const Pricing = () => {
           title: 'User Support',
         },
         {
-          limit: false,
+          limit: true,
           title: 'Data Export',
         },
       ],
@@ -187,19 +188,19 @@ const Pricing = () => {
           title: 'Notification System',
         },
         {
-          limit: false,
+          limit: true,
           title: 'User Dashboard',
         },
         {
-          limit: false,
+          limit: true,
           title: 'Integration with Payment Gateways',
         },
         {
-          limit: false,
+          limit: true,
           title: 'Multi-Currency Support',
         },
         {
-          limit: false,
+          limit: true,
           title: 'Inventory Management',
         },
         {
@@ -413,8 +414,8 @@ const Pricing = () => {
                 </Button> */}
                 {price.plan !== 'Free' && (
 
-                  <PaystackButton
-                    text = {price.btntext}
+                <PaystackButton
+                    text={price.btntext}
                     amount={show ? yearlyPrice(`${price.monthlyplan * 100}`, 12) : price.monthlyplan * 100}
                     {...paystackProps}
                     sx={{ width: '100%', mt: 3 }}
@@ -422,11 +423,14 @@ const Pricing = () => {
                     size="large"
                     color="primary"
                     onSuccess={(response) => {
-                      setSelectedPlan(price.package);
-                      handlePaystackSuccess(response, price.package);
+                      // Concatenate "_yearly" if the yearly button is toggled on
+                      const selectedPlan = show ? `${price.package}_yearly` : `${price.package}_monthly`;
+
+                      setSelectedPlan(selectedPlan);
+                      handlePaystackSuccess(response, selectedPlan);
                     }}
                   >
-                  </PaystackButton>
+                </PaystackButton>
                 )}
 
               </CardContent>
