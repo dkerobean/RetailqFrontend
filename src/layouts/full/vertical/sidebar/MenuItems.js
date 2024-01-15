@@ -126,7 +126,7 @@ const Menuitems = [
     title: 'Deliveries',
     icon: IconPackage,
     chipColor: 'secondary',
-    href: '/apps/contacts',
+    href: '/tables/delivery',
   },
   {
     id: uniqueId(),

@@ -97,7 +97,7 @@ const BCrumb = [
     title: 'Home',
   },
   {
-    title: 'Transactions',
+    title: 'Deliveries',
   },
 ];
 
@@ -107,10 +107,12 @@ const TransactionTable = () => {
   const [transactions, setTransactions] = React.useState([]);
   const [totalTransactions, setTotalTransactions] = React.useState(0);
 
+  const baseURL = process.env.BACKEND_URL;
+
   const fetchData = async () => {
     try {
       const accessKey = localStorage.getItem('accessToken');
-      const response = await axios.get('http://127.0.0.1:8000/sale/transactions/', {
+      const response = await axios.get(`${baseURL}/products/delivery/`, {
         headers: {
           Authorization: `Bearer ${accessKey}`,
         },
@@ -131,7 +133,7 @@ const TransactionTable = () => {
     const fetchTransactions = async () => {
       try {
         const token = localStorage.getItem('accessToken');
-        const response = await axios.get('http://127.0.0.1:8000/sale/transactions/', {
+        const response = await axios.get(`${baseURL}/products/delivery/`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

@@ -74,6 +74,7 @@ const PaginationTable = Loadable(lazy(() => import('../views/tables/SalesTable')
 const ExpenseTable = Loadable(lazy(() => import('../views/tables/ExpenseTable')));
 const TransactionTable = Loadable(lazy(() => import('../views/tables/TransactionTable')));
 const SearchTable = Loadable(lazy(() => import('../views/tables/SearchTable')));
+const DeliveryTable = Loadable(lazy(() => import('../views/tables/DeliveryTable')));
 
 // chart
 const LineChart = Loadable(lazy(() => import('../views/charts/LineChart')));
@@ -167,6 +168,7 @@ const Router = [
       { path: '/tables/expense', element: <ExpenseTable /> },
       { path: '/tables/transaction', element: <TransactionTable /> },// TODO
       { path: '/tables/search', element: <SearchTable /> },
+      { path: '/tables/delivery', element: <DeliveryTable /> },
       { path: '/charts/line-chart', element: <LineChart /> },
       { path: '/charts/gredient-chart', element: <GredientChart /> },
       { path: '/charts/doughnut-pie-chart', element: <DoughnutChart /> },
