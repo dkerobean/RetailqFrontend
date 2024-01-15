@@ -123,9 +123,8 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: 'Contacts',
+    title: 'Deliveries',
     icon: IconPackage,
-    chip: '2',
     chipColor: 'secondary',
     href: '/apps/contacts',
   },
