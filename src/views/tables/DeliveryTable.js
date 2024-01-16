@@ -104,21 +104,21 @@ const BCrumb = [
 const TransactionTable = () => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [transactions, setTransactions] = React.useState([]);
+  const [deliveries, setDeliveries] = React.useState([]);
   const [totalTransactions, setTotalTransactions] = React.useState(0);
 
-  const baseURL = process.env.BACKEND_URL;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   const fetchData = async () => {
     try {
       const accessKey = localStorage.getItem('accessToken');
-      const response = await axios.get(`${baseURL}/products/delivery/`, {
+      const response = await axios.get(`${backendUrl}products/deliveries/`, {
         headers: {
           Authorization: `Bearer ${accessKey}`,
         },
       });
 
-      setTransactions(response.data);
+      setDeliveries(response.data);
       setTotalTransactions(response.data.length);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -133,13 +133,14 @@ const TransactionTable = () => {
     const fetchTransactions = async () => {
       try {
         const token = localStorage.getItem('accessToken');
-        const response = await axios.get(`${baseURL}/products/delivery/`, {
+        const response = await axios.get(`${backendUrl}/products/deliveries/`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        setTransactions(response.data);
+        setDeliveries(response.data);
+        console.log("here is the data", response.data);
         setTotalTransactions(response.data.length);
       } catch (error) {
         console.error('Error fetching transaction data:', error);
@@ -171,13 +172,22 @@ const TransactionTable = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>
-                    <Typography variant="h6">Date</Typography>
+                    <Typography variant="h6">Location</Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography variant="h6">User</Typography>
+                    <Typography variant="h6">Product</Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography variant="h6">Amount</Typography>
+                    <Typography variant="h6">Quantity</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="h6">Delivery Fee</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="h6">Total</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="h6">Contact Number</Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="h6">Status</Typography>
@@ -189,46 +199,56 @@ const TransactionTable = () => {
               </TableHead>
               <TableBody>
                 {(rowsPerPage > 0
-                  ? transactions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  : transactions
+                  ? deliveries.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  : deliveries
                 ).map((row) => (
                   <TableRow key={row.id}>
                     <TableCell>
-                      {row.created_at && typeof row.created_at === 'string'
-                              ? format(new Date(row.created_at), 'E, MMM d yyyy')
-                              : 'Invalid Date'}
-                    </TableCell>
-                    <TableCell>
-                      <Stack direction="row" spacing={2} alignItems="center">
-                        <Avatar
-                          src={`http://127.0.0.1:8000${row.user_profile_image}`}
-                          alt={'user_profile_image'}
-                          width="30"
-                        />
-                        <Typography variant="h6" fontWeight="600">
-                          {row.user_name}
-                        </Typography>
-                      </Stack>
+                    <Typography variant="h6" fontWeight="600">
+                        {row.location}
+                    </Typography>
                     </TableCell>
                     <TableCell>
                       <Typography color="textSecondary" variant="h6" fontWeight="400">
-                        {row.currency}{row.amount}
+                        {row.product.name}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="h6" fontWeight="600">
+                        {row.quantity}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography color="textSecondary" variant="h6" fontWeight="400">
+                        {row.product.currency}{row.delivery_fee}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography color="textSecondary" variant="h6" fontWeight="400">
+                        455
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography color="textSecondary" variant="h6" fontWeight="400">
+                        {row.contact_number}
                       </Typography>
                     </TableCell>
                     <TableCell>
                       <Chip
                         color={
-                          row.transaction_type === 'income'
-                            ? 'success'
-                            : row.transaction_type === 'expense'
-                            ? 'error'
-                            : 'error'
+                            row.status === 'Completed'
+                                ? 'success'
+                                : row.status === 'Pending'
+                                    ? 'warning'
+                                    : row.status === 'Cancelled'  // Assuming this is the correct status for 'cancelled'
+                                        ? 'error'
+                                        : 'error'  // Fallback color if none of the conditions match
                         }
                         sx={{
                           borderRadius: '6px',
                         }}
                         size="small"
-                        label={row.transaction_type}
+                        label={row.status}
                       />
                     </TableCell>
                     <TableCell>
@@ -239,7 +259,7 @@ const TransactionTable = () => {
                     </TableCell>
                   </TableRow>
               ))}
-                {Array.from({ length: rowsPerPage - transactions.length }, (_, index) => (
+                {Array.from({ length: rowsPerPage - deliveries.length }, (_, index) => (
                   <TableRow key={index} style={{ height: 53 }}>
                     <TableCell colSpan={6} />
                   </TableRow>
