@@ -2,6 +2,6 @@
   "compilerOptions": {
     "baseUrl": "."
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "server/server.js"],
   "exclude": ["node_modules"]
 }

@@ -30,9 +30,9 @@ import Breadcrumb from '../../layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from '../../components/container/PageContainer';
 import ParentCard from '../../components/shared/ParentCard';
 import { Stack } from '@mui/system';
-import EditTransaction from 'src/components/material-ui/dialog/EditTransaction';
-import DeleteTransaction from 'src/components/material-ui/dialog/DeleteTranaction';
-import AddTransaction from 'src/components/material-ui/dialog/AddTransaction';
+import EditDelivery from 'src/components/material-ui/dialog/EditDelivery';
+import DeleteDelivery from 'src/components/material-ui/dialog/DeleteDelivery';
+import AddDelivery from 'src/components/material-ui/dialog/AddDelivery';
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -165,7 +165,7 @@ const TransactionTable = () => {
       <ParentCard title="Transaction Table">
         <Paper variant="outlined">
         <Button>
-          <AddTransaction onAdd={fetchData}/>
+          <AddDelivery onAdd={fetchData}/>
         </Button>
           <TableContainer>
             <Table aria-label="Transaction table">
@@ -240,9 +240,9 @@ const TransactionTable = () => {
                                 ? 'success'
                                 : row.status === 'Pending'
                                     ? 'warning'
-                                    : row.status === 'Cancelled'  // Assuming this is the correct status for 'cancelled'
+                                    : row.status === 'Cancelled'
                                         ? 'error'
-                                        : 'error'  // Fallback color if none of the conditions match
+                                        : 'error'
                         }
                         sx={{
                           borderRadius: '6px',
@@ -253,8 +253,8 @@ const TransactionTable = () => {
                     </TableCell>
                     <TableCell>
                       <Stack direction="row" spacing={1}>
-                        <DeleteTransaction transactionId={row.id} onDelete={fetchData}/>
-                        <EditTransaction transactionId={row.id} onEdit={fetchData} />
+                        <DeleteDelivery deliveryId={row.id} onDelete={fetchData}/>
+                        <EditDelivery deliveryId={row.id} onEdit={fetchData} />
                       </Stack>
                     </TableCell>
                   </TableRow>
