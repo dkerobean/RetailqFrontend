@@ -33,7 +33,7 @@ const DeliveryFormDialog = ({ onAdd }) => {
     user: parseInt(localStorage.getItem('user_id'), 10),
   });
   const [productsList, setProductsList] = useState([]);
-  const [suggestions, setSuggestions] = useState([]); 
+  const [suggestions, setSuggestions] = useState([]);
   const { setValue } = usePlacesAutocomplete();
 
   useEffect(() => {
@@ -198,6 +198,14 @@ const DeliveryFormDialog = ({ onAdd }) => {
               value={formData.contact_number}
               onChange={handleInputChange}
               sx={{ mb: 2 }}
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              label="Delivery Fee"
+              fullWidth
+              value={formData.delivery_fee}
+              onChange={(e) => setFormData({ ...formData, delivery_fee: e.target.value, total: e.target.value * formData.quantity })}
             />
             <TextField
               autoFocus

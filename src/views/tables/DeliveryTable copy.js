@@ -1,8 +1,5 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useTheme } from '@mui/material/styles';
-import { format } from 'date-fns';
 import {
   Typography,
   TableHead,
@@ -18,9 +15,14 @@ import {
   IconButton,
   Paper,
   TableContainer,
+  TextField,
   Button,
+  Autocomplete,
+  Stack,
 } from '@mui/material';
+import DatePicker from '@mui/lab/DatePicker';
 
+import SearchIcon from '@mui/icons-material/Search';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
@@ -29,13 +31,13 @@ import LastPageIcon from '@mui/icons-material/LastPage';
 import Breadcrumb from '../../layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from '../../components/container/PageContainer';
 import ParentCard from '../../components/shared/ParentCard';
-import { Stack } from '@mui/system';
 import EditDelivery from 'src/components/material-ui/dialog/EditDelivery';
 import DeleteDelivery from 'src/components/material-ui/dialog/DeleteDelivery';
-import AddDelivery from 'src/components/material-ui/dialog/AddDelivery';
+
+
+import { format } from 'date-fns';
 
 function TablePaginationActions(props) {
-  const theme = useTheme();
   const { count, page, rowsPerPage, onPageChange } = props;
 
   const handleFirstPageButtonClick = (event) => {
@@ -61,35 +63,28 @@ function TablePaginationActions(props) {
         disabled={page === 0}
         aria-label="first page"
       >
-        {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
+        <FirstPageIcon />
       </IconButton>
       <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
-        {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+        <KeyboardArrowLeft />
       </IconButton>
       <IconButton
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="next page"
       >
-        {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+        <KeyboardArrowRight />
       </IconButton>
       <IconButton
         onClick={handleLastPageButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="last page"
       >
-        {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
+        <LastPageIcon />
       </IconButton>
     </Box>
   );
 }
-
-TablePaginationActions.propTypes = {
-  count: PropTypes.number.isRequired,
-  onPageChange: PropTypes.func.isRequired,
-  page: PropTypes.number.isRequired,
-  rowsPerPage: PropTypes.number.isRequired,
-};
 
 const BCrumb = [
   {
@@ -102,10 +97,12 @@ const BCrumb = [
 ];
 
 const TransactionTable = () => {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [deliveries, setDeliveries] = React.useState([]);
-  const [totalTransactions, setTotalTransactions] = React.useState(0);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [deliveries, setDeliveries] = useState([]);
+  const [totalTransactions, setTotalTransactions] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
@@ -125,11 +122,11 @@ const TransactionTable = () => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchData();
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchTransactions = async () => {
       try {
         const token = localStorage.getItem('accessToken');
@@ -140,7 +137,6 @@ const TransactionTable = () => {
         });
 
         setDeliveries(response.data);
-        console.log("here is the data", response.data);
         setTotalTransactions(response.data.length);
       } catch (error) {
         console.error('Error fetching transaction data:', error);
@@ -159,14 +155,71 @@ const TransactionTable = () => {
     setPage(0);
   };
 
+  const handleSearch = (event, value) => {
+    setSearchTerm(value);
+  };
+
+  const handleDateChange = (newDate) => {
+    setSelectedDate(newDate);
+  };
+
+  const filteredDeliveries = deliveries
+    .filter(
+      (delivery) =>
+        delivery.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        delivery.product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .filter((delivery) => {
+      if (!selectedDate) return true;
+
+      const deliveryDate = new Date(delivery.created_at);
+      return (
+        deliveryDate >= selectedDate &&
+        deliveryDate < new Date(selectedDate.getTime() + 7 * 24 * 60 * 60 * 1000)
+      );
+    });
+
   return (
     <PageContainer title="Transactions" description="View and manage transactions">
       <Breadcrumb title="Transaction Table" items={BCrumb} />
       <ParentCard title="Transaction Table">
         <Paper variant="outlined">
-        <Button>
-          <AddDelivery onAdd={fetchData}/>
-        </Button>
+          <Box display="flex" alignItems="center" justifyContent="space-between" p={2}>
+            <Autocomplete
+              options={['Location', 'Product']}
+              freeSolo
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Search"
+                  variant="outlined"
+                  fullWidth
+                  onChange={(event) => setSearchTerm(event.target.value)}
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton>
+                        <SearchIcon />
+                      </IconButton>
+                    ),
+                  }}
+                />
+              )}
+              onInputChange={handleSearch}
+            />
+            <DatePicker
+              label="Select Date"
+              value={selectedDate}
+              onChange={handleDateChange}
+              renderInput={(params) => <TextField {...params} variant="outlined" />}
+              disableFuture
+              shouldDisableDate={(date) => date.getDay() !== 0} // Disable Sundays
+              renderDay={(day, _value, DayProps) => (
+                <Box {...DayProps.sx} component="div">
+                  {format(day, 'd')}
+                </Box>
+              )}
+            />
+          </Box>
           <TableContainer>
             <Table aria-label="Transaction table">
               <TableHead>
