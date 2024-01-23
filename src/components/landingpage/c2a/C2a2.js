@@ -48,7 +48,7 @@ const C2a2 = () => {
                 <StyledButton2
                   variant="outlined"
                   color="inherit"
-                  href="https://github.com/adminmart/modernize-react-lite"
+                  href="#"
                 >
                   Download Free Version
                 </StyledButton2>

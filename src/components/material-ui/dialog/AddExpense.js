@@ -12,6 +12,7 @@ import {
   Select,
   MenuItem,
   TextField,
+  InputLabel,
 } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -155,8 +156,8 @@ const FormDialog = ({ onAdd }) => {
             />
             <Select
               sx={{ my: 2 }}
-              label="Category"
               id="category"
+              label="category"
               fullWidth
               value={formData.category}
               onChange={(e) => handleInputChange({ target: { id: 'category', value: e.target.value } })}

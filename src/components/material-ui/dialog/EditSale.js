@@ -20,6 +20,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { IconEdit } from '@tabler/icons';
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL
+
 const EditDialog = ({ productId, onEditSale }) => {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -100,7 +102,7 @@ const EditDialog = ({ productId, onEditSale }) => {
   const handleEditSale = async () => {
     try {
       const accessKey = localStorage.getItem('accessToken');
-      await axios.put(`http://localhost:8000/sale/all/${productId}/`, formData, {
+      await axios.put(`${backendUrl}sale/all/${productId}/`, formData, {
         headers: {
           Authorization: `Bearer ${accessKey}`,
           'Content-Type': 'application/json',

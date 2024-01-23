@@ -13,11 +13,13 @@ const ColumnChart = () => {
   const [data, setData] = useState(null);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const accessToken = localStorage.getItem('accessToken');
-        const response = await axios.get(`http://localhost:8000/dashboard/income-expenses/?year=${selectedYear}`, {
+        const response = await axios.get(`${backendUrl}dashboard/income-expenses/?year=${selectedYear}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -67,7 +69,7 @@ const ColumnChart = () => {
     },
     yaxis: {
       title: {
-        
+
       },
     },
     fill: {

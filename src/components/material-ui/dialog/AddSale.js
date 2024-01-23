@@ -29,6 +29,8 @@ const FormDialog = ({ onAddSale }) => {
   });
   const [products, setProducts] = useState([]);
 
+  const backendUrl = process.env.REACT_APP_BACKEND_URL
+
   useEffect(() => {
     // Fetch the list of products when the component mounts
     fetchProducts();
@@ -40,7 +42,7 @@ const FormDialog = ({ onAddSale }) => {
 
       // Make a GET request to fetch products for the current user
       const response = await axios.get(
-        'http://localhost:8000/products/list/',
+        `${backendUrl}products/list/`,
         {
           headers: {
             Authorization: `Bearer ${accessKey}`,
@@ -51,11 +53,17 @@ const FormDialog = ({ onAddSale }) => {
 
       setProducts(response.data);
     } catch (error) {
-      console.error('Error fetching products:', error);
     }
   };
 
   const handleClickOpen = () => {
+    setFormData({
+      quantity_sold: 1,
+      sale_date: '',
+      user: parseInt(localStorage.getItem('user_id'), 10),
+      product_id: '',
+    });
+    
     setOpen(true);
   };
 
@@ -77,13 +85,14 @@ const FormDialog = ({ onAddSale }) => {
     });
   };
 
+
   const handleAddSale = async () => {
     try {
       const accessKey = localStorage.getItem('accessToken');
 
       // Make a POST request to add a sale
       await axios.post(
-        'http://localhost:8000/sale/all/',
+        `${backendUrl}sale/all/`,
         formData,
         {
           headers: {
@@ -105,11 +114,9 @@ const FormDialog = ({ onAddSale }) => {
       }
     } catch (error) {
       console.error('Error adding sale:', error);
-      console.log(formData);
 
       // Show error alert
-      toast.error('Error adding sale. Please try again.');
-      console.log(formData);
+      toast.warning('Quantity sold exceeds available quantity');
     }
   };
 

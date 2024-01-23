@@ -6,28 +6,33 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+
 const AlertDialog = ({ productId, onEdit }) => {
     const [open, setOpen] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         price: '',
-        quantity: ''
+        initial_quantity: ''
     });
+
+    const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
     const handleClickOpen = async () => {
         try {
             const accessKey = localStorage.getItem('accessToken');
-            const response = await axios.get(`http://127.0.0.1:8000/products/single/${productId}/`, {
+            const response = await axios.get(`${backendUrl}products/single/${productId}/`, {
                 headers: {
                     Authorization: `Bearer ${accessKey}`,
                 },
             });
 
+            console.log(response.data.initial_quantity, 'here is the response')
+
             const productData = response.data;
             setFormData({
                 name: productData.name,
                 price: productData.price,
-                quantity: productData.quantity
+                quantity: productData.initial_quantity
             });
 
             setOpen(true);
@@ -58,7 +63,7 @@ const AlertDialog = ({ productId, onEdit }) => {
 
             // Make a PUT request to update the product
             const response = await axios.put(
-                `http://127.0.0.1:8000/products/list/${productId}/`,
+                `${backendUrl}products/list/${productId}/`,
                 formDataWithProductId,
                 {
                     headers: {

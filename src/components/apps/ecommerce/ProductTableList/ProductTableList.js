@@ -394,7 +394,7 @@ const ProductTableList = () => {
                               }}
                             >
                               <Typography variant="h6" fontWeight="600">
-                                {row.quantity}
+                                {row.initial_quantity - row.total_quantity_sold}
                               </Typography>
                             </Box>
                           </Box>
