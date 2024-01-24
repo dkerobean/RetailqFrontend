@@ -73,53 +73,85 @@ const Menuitems = [
   },
   {
     navlabel: true,
-    subheader: 'Apps',
+    subheader: 'Sales',
   },
 
+  // {
+  //   id: uniqueId(),
+  //   title: 'Sales',
+  //   icon: IconChartDonut3,
+  //   href: '/apps/blog/',
+  //   children: [
+  //     {
+  //       id: uniqueId(),
+  //       title: 'Dashboard',
+  //       icon: IconPoint,
+  //       href: '/dashboards/ecommerce',
+  //     },
+  //     {
+  //       id: uniqueId(),
+  //       title: 'Record Sales',
+  //       icon: IconPoint,
+  //       href: '/tables/sales',
+  //     },
+  //     {
+  //       id: uniqueId(),
+  //       title: 'Expenses',
+  //       icon: IconPoint,
+  //     href: '/tables/expense',
+  //     },
+  //     {
+  //       id: uniqueId(),
+  //       title: 'Transactions',
+  //       icon: IconPoint,
+  //       href: '/tables/transaction',
+  //     },
+  //     // {
+  //     //   id: uniqueId(),
+  //     //   title: 'Posts',
+  //     //   icon: IconPoint,
+  //     //   href: '/apps/blog/posts',
+  //     // },
+  //     // {
+  //     //   id: uniqueId(),
+  //     //   title: 'Detail',
+  //     //   icon: IconPoint,
+  //     //   href: '/apps/blog/detail/streaming-video-way-before-it-was-cool-go-dark-tomorrow',
+  //     // },
+
+  //   ],
+  // },
   {
     id: uniqueId(),
-    title: 'Sales',
+    title: 'Dashboard',
     icon: IconChartDonut3,
-    href: '/apps/blog/',
-    children: [
-      {
-        id: uniqueId(),
-        title: 'Dashboard',
-        icon: IconPoint,
-        href: '/dashboards/ecommerce',
-      },
-      {
-        id: uniqueId(),
-        title: 'Record Sales',
-        icon: IconPoint,
-        href: '/tables/sales',
-      },
-      {
-        id: uniqueId(),
-        title: 'Expenses',
-        icon: IconPoint,
-      href: '/tables/expense',
-      },
-      {
-        id: uniqueId(),
-        title: 'Transactions',
-        icon: IconPoint,
-        href: '/tables/transaction',
-      },
-      // {
-      //   id: uniqueId(),
-      //   title: 'Posts',
-      //   icon: IconPoint,
-      //   href: '/apps/blog/posts',
-      // },
-      // {
-      //   id: uniqueId(),
-      //   title: 'Detail',
-      //   icon: IconPoint,
-      //   href: '/apps/blog/detail/streaming-video-way-before-it-was-cool-go-dark-tomorrow',
-      // },
-
-    ],
+    chipColor: 'secondary',
+    href: '/dashboards/ecommerce',
+  },
+  {
+    id: uniqueId(),
+    title: 'Record Sales',
+    icon: IconChartDonut3,
+    chipColor: 'secondary',
+    href: '/tables/sales',
+  },
+  {
+    id: uniqueId(),
+    title: 'Expenses',
+    icon: IconChartDonut3,
+    chipColor: 'secondary',
+    href: '/tables/expense',
+  },
+  {
+    id: uniqueId(),
+    title: 'Transactions',
+    icon: IconChartDonut3,
+    chipColor: 'secondary',
+    href: '/tables/transaction',
+  },
+  {
+    navlabel: true,
+    subheader: 'Delivery',
   },
   {
     id: uniqueId(),
@@ -127,6 +159,10 @@ const Menuitems = [
     icon: IconPackage,
     chipColor: 'secondary',
     href: '/tables/delivery',
+  },
+  {
+    navlabel: true,
+    subheader: 'User',
   },
   {
     id: uniqueId(),

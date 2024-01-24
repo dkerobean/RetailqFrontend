@@ -63,7 +63,7 @@ const FormDialog = ({ onAddSale }) => {
       user: parseInt(localStorage.getItem('user_id'), 10),
       product_id: '',
     });
-    
+
     setOpen(true);
   };
 

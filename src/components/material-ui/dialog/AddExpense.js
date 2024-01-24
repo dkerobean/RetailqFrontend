@@ -110,6 +110,15 @@ const FormDialog = ({ onAdd }) => {
       // Close the dialog
       handleClose();
 
+      // Reset the form data after successfully adding an expense
+      setFormData({
+        amount: '',
+        description: '',
+        user: '',
+        expense_date: '',
+        category: '',
+      });
+
       // Trigger the parent component callback to refresh the product list
       if (onAdd) {
         onAdd();

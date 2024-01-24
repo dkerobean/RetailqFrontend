@@ -61,7 +61,7 @@ const FormDialog = ({ onAdd }) => {
     });
   };
 
-  const handleAddSale = async () => {
+  const handleAddTransaction = async () => {
     try {
       const accessKey = localStorage.getItem('accessToken');
 
@@ -78,21 +78,30 @@ const FormDialog = ({ onAdd }) => {
       );
 
       // Show success alert
-      toast.success('Sale added successfully');
+      toast.success('Transaction added successfully');
 
       // Close the dialog
       handleClose();
 
-      // Trigger the parent component callback to refresh the sale list
+      // Reset the form data after successfully adding a transaction
+      setFormData({
+        amount: '',
+        transaction_type: '',
+        description: '',
+        transaction_date: '',
+        user: parseInt(localStorage.getItem('user_id'), 10),
+      });
+
+      // Trigger the parent component callback to refresh the transaction list
       if (onAdd) {
         onAdd();
       }
     } catch (error) {
-      console.error('Error adding sale:', error);
+      console.error('Error adding transaction:', error);
       console.log(formData);
 
       // Show error alert
-      toast.error('Error adding sale. Please try again.');
+      toast.error('Error adding transaction. Please try again.');
       console.log(formData);
     }
   };
@@ -105,7 +114,7 @@ const FormDialog = ({ onAdd }) => {
         </IconButton>
       </Button>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add Sale</DialogTitle>
+        <DialogTitle>Add transaction</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Please enter the details of the new transaction.
@@ -163,7 +172,7 @@ const FormDialog = ({ onAdd }) => {
           <Button color="error" onClick={handleClose}>
             Cancel
           </Button>
-          <Button onClick={handleAddSale}>Add</Button>
+          <Button onClick={handleAddTransaction}>Add</Button>
         </DialogActions>
       </Dialog>
       <ToastContainer />
