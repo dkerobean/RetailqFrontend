@@ -148,12 +148,15 @@ const FormDialog = ({ onAdd }) => {
               autoFocus
               margin="dense"
               id="description"
-              label="description"
+              label="what was the transaction about"
               type="text"
               fullWidth
               value={formData.description}
               onChange={handleInputChange}
               sx={{ mb: 2 }}
+              inputProps={{
+              maxLength: 15,
+            }}
             />
             <TextField
               autoFocus

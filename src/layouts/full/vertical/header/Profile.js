@@ -27,10 +27,12 @@ const Profile = () => {
 
     const navigate = useNavigate();
 
+    const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8000/user/profile/view/', {
+                const response = await axios.get(`${backendUrl}user/profile/view/`, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                     },
@@ -50,7 +52,7 @@ const Profile = () => {
     const handleLogout = async () => {
       try {
         const response = await axios.post(
-          'http://127.0.0.1:8000/user/logout/',
+          `${backendUrl}user/logout/`,
           { refresh_token: localStorage.getItem('refreshToken') }
         );
 
@@ -76,7 +78,6 @@ const Profile = () => {
     };
 
     // check if user is logged in
-
     if (!profile) {
         navigate('/auth/login');
     }else{
@@ -100,7 +101,7 @@ const Profile = () => {
         onClick={handleClick2}
       >
         <Avatar
-          src={`http://127.0.0.1:8000${profile.avatar}`}
+          src={`${backendUrl}${profile.avatar}`}
           alt={profile.name}
           sx={{
             width: 35,
@@ -129,7 +130,7 @@ const Profile = () => {
           <Box p={3}>
             <Typography variant="h5">User Profile</Typography>
             <Stack direction="row" py={3} spacing={2} alignItems="center">
-              <Avatar src={`http://127.0.0.1:8000${profile.avatar}`} alt={ProfileImg} sx={{ width: 95, height: 95 }} />
+              <Avatar src={`${backendUrl}${profile.avatar}`} alt={ProfileImg} sx={{ width: 95, height: 95 }} />
               <Box>
                 <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
                   {profile.display_name}

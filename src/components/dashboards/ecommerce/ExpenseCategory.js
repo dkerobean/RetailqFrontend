@@ -7,14 +7,16 @@ import Chart from 'react-apexcharts';
 
 const ExpenseDashboard = () => {
   const [expenseData, setExpenseData] = useState({});
-  const [viewType, setViewType] = useState('this_month'); // Default view type is this month
+  const [viewType, setViewType] = useState('this_month');
+
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   // Fetch data from the backend
   useEffect(() => {
     const fetchData = async () => {
       try {
         const accessToken = localStorage.getItem('accessToken');
-        const response = await fetch('http://localhost:8000/dashboard/expense/', {
+        const response = await fetch(`${backendUrl}dashboard/expense/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -33,7 +35,7 @@ const ExpenseDashboard = () => {
     };
 
     fetchData();
-  }, []); 
+  }, []);
   // Chart color
   const theme = useTheme();
   const categoryColors = theme.palette.expenseColors || []; // Ensure categoryColors is an array
@@ -103,7 +105,7 @@ const ExpenseDashboard = () => {
           </Stack>}>
             {seriesData.length > 0 ? (
               <>
-                <Chart options={optionsPieChart} series={seriesData} type="pie" height={300} />
+                <Chart options={optionsPieChart} series={seriesData} type="pie" height={330} />
               </>
             ) : (
               <Typography variant="body2">No data available for the selected view type.</Typography>

@@ -36,10 +36,12 @@ export const Profile = () => {
     fetchUserProfile();
   }, []);
 
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
   const handleLogout = async () => {
   try {
     const response = await axios.post(
-      'http://127.0.0.1:8000/user/logout/',
+      `${backendUrl}user/logout/`,
       { refresh_token: localStorage.getItem('refreshToken') }
     );
 
@@ -76,7 +78,7 @@ export const Profile = () => {
     >
       {!hideMenu && profile ? (
         <>
-          <Avatar alt="Remy Sharp" src={`http://127.0.0.1:8000${profile.avatar}`} />
+          <Avatar alt="Remy Sharp" src={`${backendUrl}${profile.avatar}`} />
 
           <Box>
             <Typography variant="h6" color="textPrimary">

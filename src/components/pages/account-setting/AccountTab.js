@@ -9,6 +9,9 @@ import Alert from '@mui/material/Alert';
 import { useNavigate } from 'react-router-dom';
 import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const locations = [
   {
@@ -107,7 +110,7 @@ const AccountTab = () => {
 useEffect(() => {
   if (openSnackbarSuccess) {
     const timer = setTimeout(() => {
-      navigate('/dashboards/modern');
+      navigate('/dashboards/ecommerce');
     }, 1000);
     return () => clearTimeout(timer);
   }
@@ -128,8 +131,10 @@ useEffect(() => {
   });
   const [avatarFile, setAvatarFile] = useState(null);
 
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/user/profile/view/', {headers: { 'Authorization': 'Bearer ' + localStorage.getItem('accessToken')}}) // Corrected the API URL
+    axios.get(`${backendUrl}user/profile/view/`, {headers: { 'Authorization': 'Bearer ' + localStorage.getItem('accessToken')}}) // Corrected the API URL
       .then(response => {
         setProfileData(response.data);
       })
@@ -172,17 +177,16 @@ useEffect(() => {
     ...(avatarFile && { avatar: avatarFile }),
   };
 
-  axios.put('http://127.0.0.1:8000/user/profile/view/', updatedData, {
+  axios.put(`${backendUrl}user/profile/view/`, updatedData, {
     headers: {
       'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
       'Content-Type': 'multipart/form-data',
     },
   })
     .then(response => {
-      console.log('Profile updated successfully:', response.data);
-      console.log(updatedData);
-      handleSuccess('Profile updated successfully')
-    })
+      setSnackbarMessage("Profile Edited");
+        setOpenSnackbarSuccess(true);
+      })
     .catch(error => {
       console.error('Error updating profile:', error);
       console.log(updatedData);
@@ -218,7 +222,7 @@ useEffect(() => {
             <Box textAlign="center" display="flex" justifyContent="center">
               <Box>
                 <Avatar
-                  src={avatarFile ? URL.createObjectURL(avatarFile) : `http://127.0.0.1:8000${profileData.avatar}`}
+                  src={avatarFile ? URL.createObjectURL(avatarFile) : `${backendUrl}${profileData.avatar}`}
                   alt={profileData.avatar}
                   sx={{ width: 120, height: 120, margin: '0 auto' }}
                 />
