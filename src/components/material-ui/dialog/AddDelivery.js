@@ -88,15 +88,6 @@ const DeliveryFormDialog = ({ onAdd }) => {
     setOpen(false);
   };
 
-//   const handleProductChange = (event) => {
-//   const selectedProduct = productsList.find(product => product.id === event.target.value);
-//   setFormData({
-//     ...formData,
-//     product: selectedProduct ? selectedProduct.id : '',
-//     total: formData.quantity * (selectedProduct ? parseFloat(selectedProduct.price) : 0) + 30,
-//   });
-// };
-
 const handleProductChange = (event) => {
   const selectedProductId = event.target.value;
   const selectedProduct = productsList.find(product => product.id === selectedProductId);
@@ -108,13 +99,46 @@ const handleProductChange = (event) => {
   });
 };
 
+
+
 const handleInputChange = (e) => {
   setFormData({
     ...formData,
+    delivery_fee: e.target.id === 'quantity'
+      ? parseInt(e.target.value, 10)
+      : e.target.id === 'delivery_fee'
+      ? parseInt(e.target.value, 10)
+      : e.target.value,
     [e.target.id]: e.target.id === 'quantity' ? parseInt(e.target.value, 10) : e.target.id === 'delivery_fee' ? parseInt(e.target.value, 10) : e.target.value,
-    total: e.target.id === 'quantity' ? (parseInt(e.target.value, 10) * formData.delivery_fee) + (parseInt(e.target.value, 10) * (formData.product ? parseFloat(productsList.find(product => product.id === formData.product).price) : 0)) : formData.total,
+    total: e.target.id === 'quantity'
+  ? (parseInt(e.target.value, 10) * formData.delivery_fee) +
+    (parseInt(e.target.value, 10) * (formData.product ? parseFloat(productsList.find(product => product.id === formData.product)?.price || 0) : 0))
+  : formData.total,
+
   });
 };
+
+// const handleInputChange = (e) => {
+//   let updatedFormData = { ...formData };
+
+//   if (e.target.id === 'quantity') {
+//     updatedFormData.quantity = parseInt(e.target.value, 10);
+//   } else if (e.target.id === 'delivery_fee') {
+//     updatedFormData.delivery_fee = parseFloat(e.target.value) || ''; // Treat as number, allow decimals
+//   } else {
+//     updatedFormData[e.target.id] = e.target.value;
+//   }
+
+//   // Calculate total based on updated values
+//   updatedFormData.total = updatedFormData.quantity * (updatedFormData.delivery_fee || 0) +
+//     (updatedFormData.quantity * (updatedFormData.product ? parseFloat(productsList.find(product => product.id === updatedFormData.product)?.price || 0) : 0));
+
+//   setFormData(updatedFormData);
+// };
+
+
+
+
 
 
   const handleLocationChange = (value) => {

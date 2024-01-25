@@ -253,7 +253,7 @@ const PaginationTable = () => {
                       />
                     </TableCell>
                     <TableCell>
-                        <EditSale  productId={row.id} onEditSale={fetchData} />
+                        <EditSale  saleId={row.id} onEditSale={fetchData} />
                     </TableCell>
                   </TableRow>
                 ))}

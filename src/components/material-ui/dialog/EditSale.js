@@ -20,18 +20,29 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { IconEdit } from '@tabler/icons';
 
-const backendUrl = process.env.REACT_APP_BACKEND_URL
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
-const EditDialog = ({ productId, onEditSale }) => {
+const EditDialog = ({ saleId, onEditSale }) => {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     quantity_sold: 1,
     sale_date: '',
     user: parseInt(localStorage.getItem('user_id'), 10),
     product_id: '',
-    product_status: '',
+    status: '',
   });
   const [products, setProducts] = useState([]);
+
+  const setSaleData = (data) => {
+    setFormData({
+      quantity_sold: data.quantity_sold,
+      sale_date: data.sale_date,
+      user: data.user,
+      product_id: data.product.id,
+      status: data.status,
+      product_name: data.product.name
+    });
+  };
 
   useEffect(() => {
     // Fetch the sale data when the component mounts
@@ -41,24 +52,18 @@ const EditDialog = ({ productId, onEditSale }) => {
   const fetchSale = async () => {
     try {
       const accessKey = localStorage.getItem('accessToken');
-      const response = await axios.get(`http://localhost:8000/sale/${productId}/`, {
+      const response = await axios.get(`${backendUrl}sale/${saleId}/`, {
         headers: {
           Authorization: `Bearer ${accessKey}`,
           'Content-Type': 'application/json',
         },
       });
 
+      setProducts(response.data.products || []);
+
       // Check if response.data is an object before setting the state
       if (response.data && typeof response.data === 'object') {
-        setFormData({
-          quantity_sold: response.data.quantity_sold,
-          sale_date: response.data.sale_date,
-          user: response.data.user,
-          product_id: response.data.product_id,
-          product: response.data.product,
-          product_name: response.data.product_name,
-          status: response.data.status,
-        });
+        setSaleData(response.data);
       } else {
         console.error('Invalid data format for sale:', response.data);
       }
@@ -102,13 +107,15 @@ const EditDialog = ({ productId, onEditSale }) => {
   const handleEditSale = async () => {
     try {
       const accessKey = localStorage.getItem('accessToken');
-      await axios.put(`${backendUrl}sale/all/${productId}/`, formData, {
+      await axios.put(`${backendUrl}sale/all/${saleId}/`, formData, {
         headers: {
           Authorization: `Bearer ${accessKey}`,
           'Content-Type': 'application/json',
         },
       });
-      console.log("here is the form data", formData)
+
+
+
       toast.success('Sale edited successfully');
       handleClose();
       if (onEditSale) {
@@ -135,25 +142,23 @@ const EditDialog = ({ productId, onEditSale }) => {
           </DialogContentText>
           <Box mt={4}>
             <FormControl fullWidth sx={{ mb: 2 }}>
-              <InputLabel id="product-label">Product</InputLabel>
-              <Select
-                labelId="product-label"
-                id="product_id"
-                value={formData.product_id}
-                onChange={handleProductChange}
-                label="Product"
-              >
-                {products.map((product) => (
-                  <MenuItem key={product.id} value={product.id}>
-                    {product.product_name}
-                  </MenuItem>
-                ))}
-              </Select>
+              <TextField
+              autoFocus
+              margin="dense"
+              id="product name"
+              label="Product"
+              type="text"
+              fullWidth
+              value={formData.product_name}
+              onChange={handleInputChange}
+              sx={{ mb: 2 }}
+              InputProps={{ readOnly: true }}
+            />
             </FormControl>
             <FormControl fullWidth sx={{ mb: 2 }}>
               <InputLabel id="status-label">Product Status</InputLabel>
               <Select
-                labelId="status-label"
+                labelId="{formData.product_name}"
                 id="status"
                 value={formData.status}
                 onChange={handleStatusChange}
@@ -169,7 +174,7 @@ const EditDialog = ({ productId, onEditSale }) => {
               margin="dense"
               id="quantity_sold"
               label="Quantity Sold"
-              type="number"
+              type="text"
               fullWidth
               value={formData.quantity_sold}
               onChange={handleInputChange}
