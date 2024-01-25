@@ -20,6 +20,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import EditIcon from '@mui/icons-material/Edit';
 import usePlacesAutocomplete from 'use-places-autocomplete';
+import { IconEdit } from '@tabler/icons';
 
 const EditDelivery = ({ deliveryId, onEdit }) => {
   const [open, setOpen] = useState(false);
@@ -46,7 +47,12 @@ const EditDelivery = ({ deliveryId, onEdit }) => {
     try {
       const accessKey = localStorage.getItem('accessToken');
       const response = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}/products/`
+        `${process.env.REACT_APP_BACKEND_URL}products/list/`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessKey}`,
+          },
+        }
       );
 
       if (response.data && Array.isArray(response.data)) {
@@ -63,7 +69,7 @@ const EditDelivery = ({ deliveryId, onEdit }) => {
     try {
       const accessKey = localStorage.getItem('accessToken');
       const response = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}/products/delivery/${deliveryId}/`,
+        `${process.env.REACT_APP_BACKEND_URL}products/delivery/${deliveryId}/`,
         {
           headers: {
             Authorization: `Bearer ${accessKey}`,
@@ -163,7 +169,7 @@ const EditDelivery = ({ deliveryId, onEdit }) => {
     <>
       <Tooltip title="Edit" onClick={handleClickOpen}>
         <IconButton>
-          <EditIcon />
+          <IconEdit width="18" />
         </IconButton>
       </Tooltip>
       <Dialog open={open} onClose={handleClose}>

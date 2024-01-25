@@ -1,5 +1,4 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useTheme } from '@mui/material/styles';
 import { format } from 'date-fns';
@@ -84,13 +83,6 @@ function TablePaginationActions(props) {
   );
 }
 
-TablePaginationActions.propTypes = {
-  count: PropTypes.number.isRequired,
-  onPageChange: PropTypes.func.isRequired,
-  page: PropTypes.number.isRequired,
-  rowsPerPage: PropTypes.number.isRequired,
-};
-
 const BCrumb = [
   {
     to: '/',
@@ -102,10 +94,10 @@ const BCrumb = [
 ];
 
 const TransactionTable = () => {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [deliveries, setDeliveries] = React.useState([]);
-  const [totalTransactions, setTotalTransactions] = React.useState(0);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [deliveries, setDeliveries] = useState([]);
+  const [totalDeliveries, setTotalDeliveries] = useState(0);
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
@@ -119,36 +111,15 @@ const TransactionTable = () => {
       });
 
       setDeliveries(response.data);
-      setTotalTransactions(response.data.length);
+      setTotalDeliveries(response.data.length);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchData();
   }, []);
-
-  React.useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const token = localStorage.getItem('accessToken');
-        const response = await axios.get(`${backendUrl}/products/deliveries/`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setDeliveries(response.data);
-        console.log("here is the data", response.data);
-        setTotalTransactions(response.data.length);
-      } catch (error) {
-        console.error('Error fetching transaction data:', error);
-      }
-    };
-
-    fetchTransactions();
-  }, [page, rowsPerPage]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -159,64 +130,67 @@ const TransactionTable = () => {
     setPage(0);
   };
 
-  return (
-    <PageContainer title="Transactions" description="View and manage transactions">
-      <Breadcrumb title="Transaction Table" items={BCrumb} />
-      <ParentCard title="Transaction Table">
-        <Paper variant="outlined">
+return (
+  <PageContainer title="Delivery" description="View and manage transactions">
+    <Breadcrumb title="Delivery Table" items={BCrumb} />
+    <ParentCard title="Delivery Table">
+      <Paper variant="outlined">
         <Button>
-          <AddDelivery onAdd={fetchData}/>
+          <AddDelivery onAdd={fetchData} />
         </Button>
-          <TableContainer>
-            <Table aria-label="Transaction table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>
-                    <Typography variant="h6">Location</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="h6">Product</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="h6">Quantity</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="h6">Delivery Fee</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="h6">Total</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="h6">Contact Number</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="h6">Status</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="h6">Action</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="h6">Date</Typography>
-                  </TableCell>
-                  <TableCell></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {(rowsPerPage > 0
+        <TableContainer>
+          <Table aria-label="Transaction table">
+            <TableHead>
+              <TableRow>
+                <TableCell>
+                  <Typography variant="h6">Location</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="h6">Product</Typography>
+                </TableCell>
+                {/* Include the rest of your TableHead content here */}
+                <TableCell>
+                  <Typography variant="h6">Quantity</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="h6">Delivery Fee</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="h6">Total</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="h6">Contact Number</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="h6">Status</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="h6">Action</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="h6">Date</Typography>
+                </TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {Array.isArray(deliveries) && deliveries.length > 0 ? (
+                (rowsPerPage > 0
                   ? deliveries.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   : deliveries
                 ).map((row) => (
                   <TableRow key={row.id}>
                     <TableCell>
-                    <Typography variant="h6" fontWeight="600">
+                      <Typography variant="h6" fontWeight="600">
                         {row.location}
-                    </Typography>
+                      </Typography>
                     </TableCell>
                     <TableCell>
                       <Typography color="textSecondary" variant="h6" fontWeight="400">
                         {row.product.name}
                       </Typography>
                     </TableCell>
+                    {/* Continue with the rest of your TableCell elements */}
                     <TableCell>
                       <Typography variant="h6" fontWeight="600">
                         {row.quantity}
@@ -224,12 +198,13 @@ const TransactionTable = () => {
                     </TableCell>
                     <TableCell>
                       <Typography color="textSecondary" variant="h6" fontWeight="400">
-                        {row.product.currency}{row.delivery_fee}
+                        {row.product.currency}
+                        {row.delivery_fee}
                       </Typography>
                     </TableCell>
                     <TableCell>
                       <Typography color="textSecondary" variant="h6" fontWeight="400">
-                        455
+                        {row.total}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -240,13 +215,13 @@ const TransactionTable = () => {
                     <TableCell>
                       <Chip
                         color={
-                            row.status === 'Completed'
-                                ? 'success'
-                                : row.status === 'Pending'
-                                    ? 'warning'
-                                    : row.status === 'Cancelled'
-                                        ? 'error'
-                                        : 'error'
+                          row.status === 'Completed'
+                            ? 'success'
+                            : row.status === 'Pending'
+                            ? 'warning'
+                            : row.status === 'Cancelled'
+                            ? 'error'
+                            : 'error'
                         }
                         sx={{
                           borderRadius: '6px',
@@ -257,49 +232,52 @@ const TransactionTable = () => {
                     </TableCell>
                     <TableCell>
                       <Stack direction="row" spacing={1}>
-                        <DeleteDelivery deliveryId={row.id} onDelete={fetchData}/>
+                        <DeleteDelivery deliveryId={row.id} onDelete={fetchData} />
                         <EditDelivery deliveryId={row.id} onEdit={fetchData} />
                       </Stack>
                     </TableCell>
                     <TableCell>
                       {row.created_at && typeof row.created_at === 'string'
-                              ? format(new Date(row.created_at), 'E, MMM d yyyy')
-                              : 'Invalid Date'}
+                        ? format(new Date(row.created_at), 'E, MMM d yyyy')
+                        : 'Invalid Date'}
                     </TableCell>
                   </TableRow>
-              ))}
-                {Array.from({ length: rowsPerPage - deliveries.length }, (_, index) => (
-                  <TableRow key={index} style={{ height: 53 }}>
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                ))}
-              </TableBody>
-              <TableFooter>
+                ))
+              ) : (
                 <TableRow>
-                  <TablePagination
-                    rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                    colSpan={6}
-                    count={totalTransactions}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    SelectProps={{
-                      inputProps: {
-                        'aria-label': 'rows per page',
-                      },
-                      native: true,
-                    }}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                    ActionsComponent={TablePaginationActions}
-                  />
+                  <TableCell colSpan={10} align="center">
+                    No deliveries found.
+                  </TableCell>
                 </TableRow>
-              </TableFooter>
-            </Table>
-          </TableContainer>
-        </Paper>
-      </ParentCard>
-    </PageContainer>
-  );
+              )}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                  colSpan={6}
+                  count={totalDeliveries}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  SelectProps={{
+                    inputProps: {
+                      'aria-label': 'rows per page',
+                    },
+                    native: true,
+                  }}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                  ActionsComponent={TablePaginationActions}
+                />
+              </TableRow>
+            </TableFooter>
+          </Table>
+        </TableContainer>
+      </Paper>
+    </ParentCard>
+  </PageContainer>
+);
+
 };
 
 export default TransactionTable;

@@ -18,7 +18,7 @@ import {
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AddIcon from '@mui/icons-material/Add';
-import usePlacesAutocomplete, { getGeocode, getLatLng } from 'use-places-autocomplete';
+import usePlacesAutocomplete from 'use-places-autocomplete';
 
 const DeliveryFormDialog = ({ onAdd }) => {
   const [open, setOpen] = useState(false);
@@ -27,7 +27,7 @@ const DeliveryFormDialog = ({ onAdd }) => {
     product: '',
     status: 'Pending',
     quantity: 1,
-    delivery_fee: 0,
+    delivery_fee: '30',
     total: 0,
     contact_number: '',
     user: parseInt(localStorage.getItem('user_id'), 10),
@@ -41,7 +41,7 @@ const DeliveryFormDialog = ({ onAdd }) => {
       try {
         const accessKey = localStorage.getItem('accessToken');
         const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND_URL}/products/list/`,
+          `${process.env.REACT_APP_BACKEND_URL}products/list/`,
           {
             headers: {
               Authorization: `Bearer ${accessKey}`,
@@ -88,23 +88,34 @@ const DeliveryFormDialog = ({ onAdd }) => {
     setOpen(false);
   };
 
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.id]: e.target.id === 'quantity' ? parseInt(e.target.value, 10) : e.target.value,
-      total: e.target.id === 'quantity' ? parseInt(e.target.value, 10) * formData.delivery_fee : formData.total,
-    });
-  };
+//   const handleProductChange = (event) => {
+//   const selectedProduct = productsList.find(product => product.id === event.target.value);
+//   setFormData({
+//     ...formData,
+//     product: selectedProduct ? selectedProduct.id : '',
+//     total: formData.quantity * (selectedProduct ? parseFloat(selectedProduct.price) : 0) + 30,
+//   });
+// };
 
-  const handleProductChange = (event) => {
-    const selectedProduct = productsList.find(product => product.id === event.target.value);
-    setFormData({
-      ...formData,
-      product: selectedProduct ? selectedProduct.id : '',
-      delivery_fee: selectedProduct ? selectedProduct.price : 0,
-      total: formData.quantity * (selectedProduct ? selectedProduct.price : 0),
-    });
-  };
+const handleProductChange = (event) => {
+  const selectedProductId = event.target.value;
+  const selectedProduct = productsList.find(product => product.id === selectedProductId);
+
+  setFormData({
+    ...formData,
+    product: selectedProductId,
+    total: formData.quantity * (selectedProduct ? parseFloat(selectedProduct.price) : 0) + 30,
+  });
+};
+
+const handleInputChange = (e) => {
+  setFormData({
+    ...formData,
+    [e.target.id]: e.target.id === 'quantity' ? parseInt(e.target.value, 10) : e.target.id === 'delivery_fee' ? parseInt(e.target.value, 10) : e.target.value,
+    total: e.target.id === 'quantity' ? (parseInt(e.target.value, 10) * formData.delivery_fee) + (parseInt(e.target.value, 10) * (formData.product ? parseFloat(productsList.find(product => product.id === formData.product).price) : 0)) : formData.total,
+  });
+};
+
 
   const handleLocationChange = (value) => {
     setFormData({
@@ -131,6 +142,18 @@ const DeliveryFormDialog = ({ onAdd }) => {
 
       // Show success alert
       toast.success('Delivery added successfully');
+
+      // Reset the form state
+    setFormData({
+      location: '',
+      product: '',
+      status: 'Pending',
+      quantity: 1,
+      delivery_fee: '',
+      total: 0,
+      contact_number: '',
+      user: parseInt(localStorage.getItem('user_id'), 10),
+    });
 
       // Close the dialog
       handleClose();
@@ -164,18 +187,18 @@ const DeliveryFormDialog = ({ onAdd }) => {
             <FormControl fullWidth sx={{ mb: 2 }}>
               <InputLabel id="product-label">Product</InputLabel>
               <Select
-                labelId="product"
-                id="product"
-                value={formData.product}
-                onChange={handleProductChange}
-                label="Product"
-              >
-                {productsList.map(product => (
-                  <MenuItem key={product.id} value={product.id}>
-                    {product.name}
-                  </MenuItem>
-                ))}
-              </Select>
+              labelId="product"
+              id="product"
+              value={formData.product}
+              onChange={handleProductChange}
+              label="Product"
+            >
+              {productsList.map(product => (
+                <MenuItem key={product.id} value={product}>
+                  {product.name}
+                </MenuItem>
+              ))}
+            </Select>
             </FormControl>
             <TextField
               autoFocus
@@ -205,7 +228,8 @@ const DeliveryFormDialog = ({ onAdd }) => {
               label="Delivery Fee"
               fullWidth
               value={formData.delivery_fee}
-              onChange={(e) => setFormData({ ...formData, delivery_fee: e.target.value, total: e.target.value * formData.quantity })}
+              onChange={handleInputChange}
+              type="number"
             />
             <TextField
               autoFocus
