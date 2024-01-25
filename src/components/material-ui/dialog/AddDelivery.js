@@ -27,7 +27,7 @@ const DeliveryFormDialog = ({ onAdd }) => {
     product: '',
     status: 'Pending',
     quantity: 1,
-    delivery_fee: '30',
+    delivery_fee: 30,
     total: 0,
     contact_number: '',
     user: parseInt(localStorage.getItem('user_id'), 10),
@@ -88,58 +88,43 @@ const DeliveryFormDialog = ({ onAdd }) => {
     setOpen(false);
   };
 
-const handleProductChange = (event) => {
-  const selectedProductId = event.target.value;
-  const selectedProduct = productsList.find(product => product.id === selectedProductId);
+  const handleProductChange = (event) => {
+    const selectedProductId = event.target.value;
+    const selectedProduct = productsList.find((product) => product.id === selectedProductId);
 
-  setFormData({
-    ...formData,
-    product: selectedProductId,
-    total: formData.quantity * (selectedProduct ? parseFloat(selectedProduct.price) : 0) + 30,
-  });
-};
+    setFormData({
+      ...formData,
+      product: selectedProductId,
+      total: calculateTotal(formData.quantity, formData.delivery_fee, selectedProduct),
+    });
+  };
 
+  const handleInputChange = (e) => {
+    const inputValue = e.target.value;
+    const fieldName = e.target.id;
 
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [fieldName]: fieldName === 'quantity' ? parseInt(inputValue, 10) : inputValue,
+      total: calculateTotal(
+        fieldName === 'quantity' ? parseInt(inputValue, 10) : prevFormData.quantity,
+        prevFormData.delivery_fee,
+        productsList.find((product) => product.id === prevFormData.product)
+      ),
+    }));
+  };
 
-const handleInputChange = (e) => {
-  setFormData({
-    ...formData,
-    delivery_fee: e.target.id === 'quantity'
-      ? parseInt(e.target.value, 10)
-      : e.target.id === 'delivery_fee'
-      ? parseInt(e.target.value, 10)
-      : e.target.value,
-    [e.target.id]: e.target.id === 'quantity' ? parseInt(e.target.value, 10) : e.target.id === 'delivery_fee' ? parseInt(e.target.value, 10) : e.target.value,
-    total: e.target.id === 'quantity'
-  ? (parseInt(e.target.value, 10) * formData.delivery_fee) +
-    (parseInt(e.target.value, 10) * (formData.product ? parseFloat(productsList.find(product => product.id === formData.product)?.price || 0) : 0))
-  : formData.total,
-
-  });
-};
-
-// const handleInputChange = (e) => {
-//   let updatedFormData = { ...formData };
-
-//   if (e.target.id === 'quantity') {
-//     updatedFormData.quantity = parseInt(e.target.value, 10);
-//   } else if (e.target.id === 'delivery_fee') {
-//     updatedFormData.delivery_fee = parseFloat(e.target.value) || ''; // Treat as number, allow decimals
-//   } else {
-//     updatedFormData[e.target.id] = e.target.value;
-//   }
-
-//   // Calculate total based on updated values
-//   updatedFormData.total = updatedFormData.quantity * (updatedFormData.delivery_fee || 0) +
-//     (updatedFormData.quantity * (updatedFormData.product ? parseFloat(productsList.find(product => product.id === updatedFormData.product)?.price || 0) : 0));
-
-//   setFormData(updatedFormData);
-// };
-
-
-
-
-
+  const handleDeliveryPriceChange = (e) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      delivery_fee: parseInt(e.target.value, 10),
+      total: calculateTotal(
+        prevFormData.quantity,
+        parseInt(e.target.value, 10),
+        productsList.find((product) => product.id === prevFormData.product)
+      ),
+    }));
+  };
 
   const handleLocationChange = (value) => {
     setFormData({
@@ -168,16 +153,16 @@ const handleInputChange = (e) => {
       toast.success('Delivery added successfully');
 
       // Reset the form state
-    setFormData({
-      location: '',
-      product: '',
-      status: 'Pending',
-      quantity: 1,
-      delivery_fee: '',
-      total: 0,
-      contact_number: '',
-      user: parseInt(localStorage.getItem('user_id'), 10),
-    });
+      setFormData({
+        location: '',
+        product: '',
+        status: 'Pending',
+        quantity: 1,
+        delivery_fee: 30,
+        total: 0,
+        contact_number: '',
+        user: parseInt(localStorage.getItem('user_id'), 10),
+      });
 
       // Close the dialog
       handleClose();
@@ -192,6 +177,11 @@ const handleInputChange = (e) => {
       // Show error alert
       toast.error('Error adding delivery. Please try again.');
     }
+  };
+
+  const calculateTotal = (quantity, deliveryFee, product) => {
+    const productPrice = product ? parseFloat(product.price) : 0;
+    return quantity * productPrice + deliveryFee;
   };
 
   return (
@@ -211,18 +201,18 @@ const handleInputChange = (e) => {
             <FormControl fullWidth sx={{ mb: 2 }}>
               <InputLabel id="product-label">Product</InputLabel>
               <Select
-              labelId="product"
-              id="product"
-              value={formData.product}
-              onChange={handleProductChange}
-              label="Product"
-            >
-              {productsList.map(product => (
-                <MenuItem key={product.id} value={product}>
-                  {product.name}
-                </MenuItem>
-              ))}
-            </Select>
+                labelId="product"
+                id="product"
+                value={formData.product}
+                onChange={handleProductChange}
+                label="Product"
+              >
+                {productsList.map((product) => (
+                  <MenuItem key={product.id} value={product.id}>
+                    {product.name}
+                  </MenuItem>
+                ))}
+              </Select>
             </FormControl>
             <TextField
               autoFocus
@@ -248,11 +238,12 @@ const handleInputChange = (e) => {
             />
             <TextField
               autoFocus
+              id="delivery_fee"
               margin="dense"
               label="Delivery Fee"
               fullWidth
               value={formData.delivery_fee}
-              onChange={handleInputChange}
+              onChange={handleDeliveryPriceChange}
               type="number"
             />
             <TextField
