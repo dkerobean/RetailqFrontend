@@ -113,7 +113,7 @@ const ColumnChart = () => {
   };
 
   return (
-    <PageContainer title="Column Chart" description="this is inner page">
+    <PageContainer title="Dashboard" description="Main Dashboard">
       <ParentCard title={
         <Stack direction="row" alignItems="center" spacing={2} mb={2}>
           <Typography variant="h6">Cashflow</Typography>

@@ -162,8 +162,10 @@ const PaginationTable = () => {
   return (
     <PageContainer title="Sales" description="record a sale">
       <Breadcrumb title="Record Sales" items={BCrumb} />
-      <Box sx={{ display: "flex-end", justifyContent: "space-between", alignItems: "center"}}>
-        <FormDialog onAddSale={fetchData} />
+      <Box sx={{ position: 'relative' }}>
+        <Box sx={{ position: 'absolute', top: -15, right: 0, m: 2 }}>
+          <FormDialog onAddSale={fetchData} />
+        </Box>
       </Box>
       <ParentCard title="Sales Table">
         <Paper variant="outlined">
@@ -174,7 +176,6 @@ const PaginationTable = () => {
                 whiteSpace: 'nowrap',
               }}
             >
-
               <TableHead>
                 <TableRow>
                   <TableCell>
