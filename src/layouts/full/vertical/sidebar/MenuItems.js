@@ -200,7 +200,7 @@ const Menuitems = [
     id: uniqueId(),
     title: 'User',
     icon: IconUserCircle,
-    href: '/apps/chats',
+    href: '/pages/account-settings',
   },
   // {
   //   id: uniqueId(),

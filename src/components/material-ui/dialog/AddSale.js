@@ -24,6 +24,7 @@ const FormDialog = ({ onAddSale }) => {
   const [formData, setFormData] = useState({
     quantity_sold: 1,
     sale_date: '',
+    product: '',
     user: parseInt(localStorage.getItem('user_id'), 10),
   });
   const [products, setProducts] = useState([]);
@@ -91,6 +92,8 @@ const FormDialog = ({ onAddSale }) => {
           },
         }
       );
+
+      console.log("here is the passsed data", formData);
 
       // Show success alert
       toast.success('Sale added successfully');

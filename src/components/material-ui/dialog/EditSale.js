@@ -38,7 +38,7 @@ const EditDialog = ({ saleId, onEditSale }) => {
       quantity_sold: data.quantity_sold,
       sale_date: data.sale_date,
       user: data.user,
-      product_id: data.product.id,
+      product: data.product,
       status: data.status,
       product_name: data.product.name
     });
@@ -60,6 +60,8 @@ const EditDialog = ({ saleId, onEditSale }) => {
       });
 
       setProducts(response.data.products || []);
+
+      console.log("here is the sales data", response.data)
 
       // Check if response.data is an object before setting the state
       if (response.data && typeof response.data === 'object') {
@@ -114,8 +116,6 @@ const EditDialog = ({ saleId, onEditSale }) => {
         },
       });
 
-
-
       toast.success('Sale edited successfully');
       handleClose();
       if (onEditSale) {
@@ -123,6 +123,7 @@ const EditDialog = ({ saleId, onEditSale }) => {
       }
     } catch (error) {
       console.error('Error editing sale:', error);
+      console.log(formData);
       toast.error('Error editing sale. Please try again.');
     }
   };
@@ -149,7 +150,7 @@ const EditDialog = ({ saleId, onEditSale }) => {
               label="Product"
               type="text"
               fullWidth
-              value={formData.product_name}
+              value={formData.product}
               onChange={handleInputChange}
               sx={{ mb: 2 }}
               InputProps={{ readOnly: true }}
