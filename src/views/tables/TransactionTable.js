@@ -19,6 +19,7 @@ import {
   Paper,
   TableContainer,
   Button,
+  Grid,
 } from '@mui/material';
 
 import FirstPageIcon from '@mui/icons-material/FirstPage';
@@ -101,6 +102,8 @@ const BCrumb = [
   },
 ];
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
 const TransactionTable = () => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -110,7 +113,7 @@ const TransactionTable = () => {
   const fetchData = async () => {
     try {
       const accessKey = localStorage.getItem('accessToken');
-      const response = await axios.get('http://127.0.0.1:8000/sale/transactions/', {
+      const response = await axios.get(`${backendUrl}sale/transactions/`, {
         headers: {
           Authorization: `Bearer ${accessKey}`,
         },
@@ -131,7 +134,7 @@ const TransactionTable = () => {
     const fetchTransactions = async () => {
       try {
         const token = localStorage.getItem('accessToken');
-        const response = await axios.get('http://127.0.0.1:8000/sale/transactions/', {
+        const response = await axios.get(`${backendUrl}sale/transactions/`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -161,9 +164,13 @@ const TransactionTable = () => {
       <Breadcrumb title="Transaction Table" items={BCrumb} />
       <ParentCard title="Transaction Table">
         <Paper variant="outlined">
-        <Button>
-          <AddTransaction onAdd={fetchData}/>
-        </Button>
+        <Grid container justifyContent="space-between" alignItems="center">
+          <Grid item>
+          </Grid>
+          <Grid item sx={{m:2}}>
+              <AddTransaction onAdd={fetchData} />
+          </Grid>
+        </Grid>
           <TableContainer>
             <Table aria-label="Transaction table">
               <TableHead>
@@ -199,7 +206,7 @@ const TransactionTable = () => {
                     <TableCell>
                       <Stack direction="row" spacing={2} alignItems="center">
                         <Avatar
-                          src={`http://127.0.0.1:8000${row.user_profile_image}`}
+                          src={`${backendUrl}${row.user_profile_image}`}
                           alt={'user_profile_image'}
                           width="30"
                         />

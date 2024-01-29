@@ -18,6 +18,7 @@ import {
   Paper,
   TableContainer,
   Button,
+  Grid,
 } from '@mui/material';
 
 import FirstPageIcon from '@mui/icons-material/FirstPage';
@@ -135,9 +136,13 @@ return (
     <Breadcrumb title="Delivery Table" items={BCrumb} />
     <ParentCard title="Delivery Table">
       <Paper variant="outlined">
-        <Button>
-          <AddDelivery onAdd={fetchData} />
-        </Button>
+      <Grid container justifyContent="space-between" alignItems="center">
+          <Grid item>
+          </Grid>
+          <Grid item sx={{m:2}}>
+              <AddDelivery onAdd={fetchData} />
+          </Grid>
+        </Grid>
         <TableContainer>
           <Table aria-label="Transaction table">
             <TableHead>
