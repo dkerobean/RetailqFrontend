@@ -337,7 +337,7 @@ useEffect(() => {
                     }}
                     htmlFor="text-store-name"
                   >
-                    Store Name
+                    Store Name<span style={{ color: 'red' }}>*</span>
                   </CustomFormLabel>
                   <CustomTextField
                     id="text-store-name"
@@ -357,7 +357,7 @@ useEffect(() => {
                     }}
                     htmlFor="text-currency"
                   >
-                    Business Type
+                    Business Type<span style={{ color: 'red' }}>*</span>
                   </CustomFormLabel>
                   {/* <CustomSelect
                     fullWidth
@@ -395,7 +395,7 @@ useEffect(() => {
                     }}
                     htmlFor="text-phone"
                   >
-                    Phone
+                    Phone<span style={{ color: 'red' }}>*</span>
                   </CustomFormLabel>
                   <CustomTextField
                     id="text-phone"
@@ -431,7 +431,7 @@ useEffect(() => {
                     }}
                     htmlFor="text-currency"
                   >
-                    Currency
+                    Currency<span style={{ color: 'red' }}>*</span>
                   </CustomFormLabel>
                   <Autocomplete
                     disablePortal
