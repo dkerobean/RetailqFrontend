@@ -36,7 +36,6 @@ const FormDialog = ({ onAdd }) => {
   });
 
   useEffect(() => {
-    // Fetch categories from your API
     const fetchCategories = async () => {
       try {
         const accessKey = localStorage.getItem('accessToken');
@@ -49,7 +48,6 @@ const FormDialog = ({ onAdd }) => {
         setCategories(response.data);
       } catch (error) {
         console.error('Error fetching categories:', error);
-        // Handle error as needed
       }
     };
 
@@ -91,23 +89,25 @@ const FormDialog = ({ onAdd }) => {
   };
 
   const validateForm = () => {
-    const errors = {};
-    Object.keys(formData).forEach((key) => {
-      if (!formData[key]) {
-        errors[key] = true;
-      }
-    });
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
+  const errors = {};
+  Object.keys(formData).forEach((key) => {
+    // Exclude 'user' from validation
+    if (key !== 'user' && !formData[key]) {
+      errors[key] = true;
+    }
+  });
+  setValidationErrors(errors);
+  return Object.keys(errors).length === 0;
+};
+
 
   const handleAddProduct = async () => {
     try {
-      const isValid = validateForm();
+      const isValid = validateForm(validationErrors);
 
       if (!isValid) {
         // Validation failed
-        console.log('Product');
+        console.log();
         return;
       }
 
@@ -131,10 +131,8 @@ const FormDialog = ({ onAdd }) => {
         }
       );
 
-      // Show success alert
       toast.success('Expense added successfully');
 
-      // Close the dialog
       handleClose();
 
       // Reset the form data after successfully adding an expense

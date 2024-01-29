@@ -316,8 +316,9 @@ useEffect(() => {
                       mt: 0,
                     }}
                     htmlFor="text-name"
+                    required={true}
                   >
-                    Your Name
+                    Your Name<span style={{ color: 'red' }}>*</span>
                   </CustomFormLabel>
                   <CustomTextField
                     id="text-name"
