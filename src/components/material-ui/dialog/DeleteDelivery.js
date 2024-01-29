@@ -61,7 +61,7 @@ const DeleteProduct = ({ deliveryId, onDelete }) => {
         <DialogTitle id="alert-dialog-title">{"Delete Delivery"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete this Transaction?
+            Are you sure you want to delete this delivery?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

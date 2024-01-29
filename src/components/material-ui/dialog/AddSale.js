@@ -28,11 +28,18 @@ const FormDialog = ({ onAddSale }) => {
     user: parseInt(localStorage.getItem('user_id'), 10),
   });
   const [products, setProducts] = useState([]);
+  const [validationErrors, setValidationErrors] = useState({
+    product: false,
+    quantity_sold: false,
+    sale_date: false,
+  });
 
   useEffect(() => {
     // Fetch the list of products when the component mounts
     fetchProducts();
   }, []);
+
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   const fetchProducts = async () => {
     try {
@@ -40,7 +47,7 @@ const FormDialog = ({ onAddSale }) => {
 
       // Make a GET request to fetch products for the current user
       const response = await axios.get(
-        'http://localhost:8000/products/list/',
+        `${backendUrl}products/list/`,
         {
           headers: {
             Authorization: `Bearer ${accessKey}`,
@@ -68,6 +75,12 @@ const FormDialog = ({ onAddSale }) => {
       ...formData,
       [e.target.id]: e.target.id === 'quantity_sold' ? parseInt(e.target.value, 10) : e.target.value,
     });
+
+    // Clear validation errors when the user starts typing
+    setValidationErrors({
+      ...validationErrors,
+      [e.target.id]: false,
+    });
   };
 
   const handleProductChange = (event) => {
@@ -75,15 +88,39 @@ const FormDialog = ({ onAddSale }) => {
       ...formData,
       product: event.target.value,
     });
+
+    // Clear validation errors when the product is selected
+    setValidationErrors({
+      ...validationErrors,
+      product: false,
+    });
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    Object.keys(formData).forEach((key) => {
+      if (key !== 'user' && !formData[key]) {
+        errors[key] = true;
+      }
+    });
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleAddSale = async () => {
     try {
+      const isValid = validateForm();
+
+      if (!isValid) {
+        // Validation failed
+        return;
+      }
+
       const accessKey = localStorage.getItem('accessToken');
 
       // Make a POST request to add a sale
       await axios.post(
-        'http://localhost:8000/sale/all/',
+        `${backendUrl}sale/all/`,
         formData,
         {
           headers: {
@@ -92,8 +129,6 @@ const FormDialog = ({ onAddSale }) => {
           },
         }
       );
-
-      console.log("here is the passsed data", formData);
 
       // Show success alert
       toast.success('Sale added successfully');
@@ -107,7 +142,6 @@ const FormDialog = ({ onAddSale }) => {
       }
     } catch (error) {
       console.error('Error adding sale:', error);
-      console.log(formData);
 
       // Show error alert
       toast.error('Error adding sale. Please try again.');
@@ -133,10 +167,12 @@ const FormDialog = ({ onAddSale }) => {
               <InputLabel id="product-label">Product</InputLabel>
               <Select
                 labelId="product-label"
-                id="product_id"
+                id="product"
                 value={formData.product}
                 onChange={handleProductChange}
                 label="Product"
+                error={validationErrors.product}
+                required
               >
                 {products.map((product) => (
                   <MenuItem key={product.id} value={product.id}>
@@ -154,6 +190,9 @@ const FormDialog = ({ onAddSale }) => {
               fullWidth
               value={formData.quantity_sold}
               onChange={handleInputChange}
+              error={validationErrors.quantity_sold}
+              helperText={validationErrors.quantity_sold && 'Quantity Sold is required'}
+              required
               sx={{ mb: 2 }}
             />
             <TextField
@@ -165,6 +204,9 @@ const FormDialog = ({ onAddSale }) => {
               fullWidth
               value={formData.sale_date}
               onChange={handleInputChange}
+              error={validationErrors.sale_date}
+              helperText={validationErrors.sale_date && 'Sale Date is required'}
+              required
             />
           </Box>
         </DialogContent>

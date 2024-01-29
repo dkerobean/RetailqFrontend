@@ -12,7 +12,6 @@ import {
   Select,
   MenuItem,
   TextField,
-  InputLabel,
 } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -29,6 +28,12 @@ const FormDialog = ({ onAdd }) => {
     category: '',
   });
   const [categories, setCategories] = useState([]);
+  const [validationErrors, setValidationErrors] = useState({
+    amount: false,
+    description: false,
+    category: false,
+    expense_date: false,
+  });
 
   useEffect(() => {
     // Fetch categories from your API
@@ -60,27 +65,52 @@ const FormDialog = ({ onAdd }) => {
   };
 
   const handleInputChange = (e) => {
-  // Separate handling for 'category'
-  if (e.target.id === 'category') {
-    setFormData({
-      ...formData,
-      category: e.target.value,
+    // Separate handling for 'category'
+    if (e.target.id === 'category') {
+      setFormData({
+        ...formData,
+        category: e.target.value,
+      });
+    } else if (e.target.id === 'expense_date') {
+      setFormData({
+        ...formData,
+        expense_date: e.target.value,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [e.target.id]: e.target.value,
+      });
+    }
+
+    // Clear validation errors when the user starts typing
+    setValidationErrors({
+      ...validationErrors,
+      [e.target.id]: false,
     });
-  } else if (e.target.id === 'expense_date') {
-    setFormData({
-      ...formData,
-      expense_date: e.target.value,
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    Object.keys(formData).forEach((key) => {
+      if (!formData[key]) {
+        errors[key] = true;
+      }
     });
-  } else {
-    setFormData({
-      ...formData,
-      [e.target.id]: e.target.value,
-    });
-  }
-};
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleAddProduct = async () => {
     try {
+      const isValid = validateForm();
+
+      if (!isValid) {
+        // Validation failed
+        console.log('Product');
+        return;
+      }
+
       const accessKey = localStorage.getItem('accessToken');
       const userId = localStorage.getItem('user_id');
 
@@ -88,8 +118,6 @@ const FormDialog = ({ onAdd }) => {
         ...formData,
         user: userId,
       };
-
-      console.log("withuserid",formDataWithUserId)
 
       // Make a POST request to your API
       const response = await axios.post(
@@ -105,7 +133,6 @@ const FormDialog = ({ onAdd }) => {
 
       // Show success alert
       toast.success('Expense added successfully');
-      console.log("with user id", formDataWithUserId);
 
       // Close the dialog
       handleClose();
@@ -125,7 +152,6 @@ const FormDialog = ({ onAdd }) => {
       }
     } catch (error) {
       console.error('Error adding Expense:', error);
-      console.log(formData)
 
       // Show error alert
       toast.error('Error adding expense. Please try again.');
@@ -153,6 +179,9 @@ const FormDialog = ({ onAdd }) => {
               type="number"
               fullWidth
               onChange={handleInputChange}
+              error={validationErrors.amount}
+              helperText={validationErrors.amount && 'Amount is required'}
+              required
             />
             <CustomTextField
               sx={{ my: 2 }}
@@ -162,14 +191,19 @@ const FormDialog = ({ onAdd }) => {
               label="Description"
               fullWidth
               onChange={handleInputChange}
+              error={validationErrors.description}
+              helperText={validationErrors.description && 'Description is required'}
+              required
             />
             <Select
               sx={{ my: 2 }}
               id="category"
-              label="category"
+              label="Category"
               fullWidth
               value={formData.category}
               onChange={(e) => handleInputChange({ target: { id: 'category', value: e.target.value } })}
+              error={validationErrors.category}
+              required
             >
               {categories.map((category) => (
                 <MenuItem key={category.id} value={category.id}>
@@ -181,11 +215,14 @@ const FormDialog = ({ onAdd }) => {
               autoFocus
               margin="dense"
               id="expense_date"
-              label=""
+              label="Expense Date"
               type="date"
               fullWidth
               value={formData.expense_date}
               onChange={handleInputChange}
+              error={validationErrors.expense_date}
+              helperText={validationErrors.expense_date && 'Expense Date is required'}
+              required
             />
           </Box>
         </DialogContent>

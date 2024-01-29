@@ -35,6 +35,13 @@ const DeliveryFormDialog = ({ onAdd }) => {
   const [productsList, setProductsList] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const { setValue } = usePlacesAutocomplete();
+  const [validationErrors, setValidationErrors] = useState({
+    location: false,
+    product: false,
+    quantity: false,
+    contact_number: false,
+    delivery_fee: false,
+  });
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -97,6 +104,12 @@ const DeliveryFormDialog = ({ onAdd }) => {
       product: selectedProductId,
       total: calculateTotal(formData.quantity, formData.delivery_fee, selectedProduct),
     });
+
+    // Clear validation errors when the user changes the product
+    setValidationErrors({
+      ...validationErrors,
+      product: false,
+    });
   };
 
   const handleInputChange = (e) => {
@@ -112,6 +125,12 @@ const DeliveryFormDialog = ({ onAdd }) => {
         productsList.find((product) => product.id === prevFormData.product)
       ),
     }));
+
+    // Clear validation errors when the user starts typing
+    setValidationErrors({
+      ...validationErrors,
+      [fieldName]: false,
+    });
   };
 
   const handleDeliveryPriceChange = (e) => {
@@ -124,6 +143,12 @@ const DeliveryFormDialog = ({ onAdd }) => {
         productsList.find((product) => product.id === prevFormData.product)
       ),
     }));
+
+    // Clear validation errors when the user changes the delivery fee
+    setValidationErrors({
+      ...validationErrors,
+      delivery_fee: false,
+    });
   };
 
   const handleLocationChange = (value) => {
@@ -131,10 +156,23 @@ const DeliveryFormDialog = ({ onAdd }) => {
       ...formData,
       location: value,
     });
+
+    // Clear validation errors when the user changes the location
+    setValidationErrors({
+      ...validationErrors,
+      location: false,
+    });
   };
 
   const handleAddDelivery = async () => {
     try {
+      const isValid = validateForm();
+
+      if (!isValid) {
+        // Validation failed
+        return;
+      }
+
       const accessKey = localStorage.getItem('accessToken');
 
       // Make a POST request to add a delivery
@@ -184,6 +222,28 @@ const DeliveryFormDialog = ({ onAdd }) => {
     return quantity * productPrice + deliveryFee;
   };
 
+  const validateForm = () => {
+    const errors = {};
+    if (!formData.location) {
+      errors.location = true;
+    }
+    if (!formData.product) {
+      errors.product = true;
+    }
+    if (!formData.quantity || formData.quantity <= 0) {
+      errors.quantity = true;
+    }
+    if (!formData.contact_number) {
+      errors.contact_number = true;
+    }
+    if (!formData.delivery_fee || formData.delivery_fee < 0) {
+      errors.delivery_fee = true;
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   return (
     <>
       <Button variant="contained" color="primary" fullWidth onClick={handleClickOpen}>
@@ -206,6 +266,7 @@ const DeliveryFormDialog = ({ onAdd }) => {
                 value={formData.product}
                 onChange={handleProductChange}
                 label="Product"
+                error={validationErrors.product}
               >
                 {productsList.map((product) => (
                   <MenuItem key={product.id} value={product.id}>
@@ -224,6 +285,8 @@ const DeliveryFormDialog = ({ onAdd }) => {
               value={formData.quantity}
               onChange={handleInputChange}
               sx={{ mb: 2 }}
+              error={validationErrors.quantity}
+              helperText={validationErrors.quantity && 'Quantity is required and must be greater than 0'}
             />
             <TextField
               autoFocus
@@ -235,6 +298,8 @@ const DeliveryFormDialog = ({ onAdd }) => {
               value={formData.contact_number}
               onChange={handleInputChange}
               sx={{ mb: 2 }}
+              error={validationErrors.contact_number}
+              helperText={validationErrors.contact_number && 'Contact Number is required'}
             />
             <TextField
               autoFocus
@@ -245,6 +310,8 @@ const DeliveryFormDialog = ({ onAdd }) => {
               value={formData.delivery_fee}
               onChange={handleDeliveryPriceChange}
               type="number"
+              error={validationErrors.delivery_fee}
+              helperText={validationErrors.delivery_fee && 'Delivery Fee must be 0 or greater'}
             />
             <TextField
               autoFocus
@@ -256,6 +323,8 @@ const DeliveryFormDialog = ({ onAdd }) => {
                 setValue(e.target.value);
                 handleLocationChange(e.target.value);
               }}
+              error={validationErrors.location}
+              helperText={validationErrors.location && 'Location is required'}
             />
             <ul>
               {Array.isArray(suggestions) &&

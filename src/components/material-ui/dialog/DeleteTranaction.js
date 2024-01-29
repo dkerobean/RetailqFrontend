@@ -16,12 +16,14 @@ const DeleteProduct = ({ transactionId, onDelete }) => {
     setOpen(false);
   };
 
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
   const handleDelete = async () => {
     try {
       const accessKey = localStorage.getItem('accessToken');
 
       // Make a DELETE request to your API
-      const response = await axios.delete(`http://localhost:8000/sale/transactions/${transactionId}/`, {
+      const response = await axios.delete(`${backendUrl}sale/transactions/${transactionId}/`, {
         headers: {
           Authorization: `Bearer ${accessKey}`,
         },
@@ -58,7 +60,7 @@ const DeleteProduct = ({ transactionId, onDelete }) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Delete Product"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{"Delete Transaction"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             Are you sure you want to delete this Transaction?
