@@ -1,0 +1,16 @@
+/* PaystackButtonStyles.css */
+
+.paystack-button {
+  width: 100%;
+  margin-top: 1.5rem;
+  /* equivalent to theme.spacing(3) */
+  background-color: #1976d2;
+  /* primary color */
+  color: #fff;
+  /* white text */
+}
+
+.paystack-button:hover {
+  background-color: #1565c0;
+  /* darker shade on hover */
+}

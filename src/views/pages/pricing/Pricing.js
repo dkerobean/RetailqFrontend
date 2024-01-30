@@ -25,6 +25,7 @@ import { PaystackButton } from 'react-paystack';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+
 const BCrumb = [
   {
     to: '/',
@@ -42,12 +43,14 @@ const Pricing = () => {
   const [userProfile, setUserProfile] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState('');
 
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
   // Fetch subscription data from the API
   useEffect(() => {
     const fetchSubscriptionData = async () => {
       try {
         const accessToken = localStorage.getItem('accessToken');
-        const response = await fetch('http://localhost:8000/subscription/all/', {
+        const response = await fetch(`${backendUrl}subscription/all/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -71,7 +74,7 @@ const Pricing = () => {
     const fetchProfileData = async () => {
       try {
         const accessToken = localStorage.getItem('accessToken');
-        const response = await fetch('http://localhost:8000/user/profile/view/', {
+        const response = await fetch(`${backendUrl}user/profile/view/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -107,7 +110,7 @@ const Pricing = () => {
         const accessToken = localStorage.getItem('accessToken');
         console.log("here is the pla:", plan)
 
-        const upgradeResponse = await fetch('http://localhost:8000/subscription/upgrade/', {
+        const upgradeResponse = await fetch(`${backendUrl}subscription/upgrade/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -414,23 +417,29 @@ const Pricing = () => {
                 </Button> */}
                 {price.plan !== 'Free' && (
 
-                <PaystackButton
-                    text={price.btntext}
-                    amount={show ? yearlyPrice(`${price.monthlyplan * 100}`, 12) : price.monthlyplan * 100}
-                    {...paystackProps}
-                    sx={{ width: '100%', mt: 3 }}
+                <Button
+                  sx={{ width: '100%', mt: 3 }}
                     variant="contained"
                     size="large"
                     color="primary"
-                    onSuccess={(response) => {
-                      // Concatenate "_yearly" if the yearly button is toggled on
-                      const selectedPlan = show ? `${price.package}_yearly` : `${price.package}_monthly`;
-
-                      setSelectedPlan(selectedPlan);
-                      handlePaystackSuccess(response, selectedPlan);
-                    }}
                   >
+
+                  <PaystackButton
+                  className='paystack-button'
+                  text={price.btntext}
+                  amount={show ? yearlyPrice(`${price.monthlyplan * 100}`, 12) : price.monthlyplan * 100}
+                  {...paystackProps}
+                  onSuccess={(response) => {
+                    // Concatenate "_yearly" if the yearly button is toggled on
+                    const selectedPlan = show ? `${price.package}_yearly` : `${price.package}_monthly`;
+
+                    setSelectedPlan(selectedPlan);
+                    handlePaystackSuccess(response, selectedPlan);
+                  }}
+                >
                 </PaystackButton>
+              </Button>
+
                 )}
 
               </CardContent>
