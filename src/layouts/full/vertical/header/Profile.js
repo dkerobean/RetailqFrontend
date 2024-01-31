@@ -41,7 +41,7 @@ const Profile = () => {
                 setProfile(response.data);
 
             } catch (error) {
-                navigate('/auth/login');
+                navigate('/landingpage');
                 console.error('Error fetching user profile:', error);
             }
         };
@@ -81,8 +81,7 @@ const Profile = () => {
     if (!profile) {
         navigate('/auth/login');
     }else{
-      // Log the avatar URL for debugging
-    console.log(profile.avatar);
+      console.log(profile.avatar);
 
 
   return (
