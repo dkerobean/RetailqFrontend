@@ -25,7 +25,7 @@ const StillQuestions = () => {
             Can't find the answer your're looking for ? Please chat to our friendly team.
           </Typography>
           <Box textAlign="center" mt={3}>
-            <Button variant="contained" color="primary">
+            <Button href="/apps/tickets" variant="contained" color="primary">
               Chat with us
             </Button>
           </Box>
