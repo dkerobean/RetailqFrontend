@@ -7,6 +7,8 @@ import DashboardCard from '../../shared/DashboardCard';
 import icon1Img from 'src/assets/images/svgs/icon-office-bag-2.svg';
 import axios from 'axios';
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
 const SalesProfit = () => {
   const theme = useTheme();
   const errorlight = theme.palette.error.light;
@@ -26,7 +28,7 @@ const [productSales, setProductSales] = useState({});
           return;
         }
 
-        const response = await axios.get('http://localhost:8000/dashboard/details/', {
+        const response = await axios.get(`${backendUrl}/dashboard/details/`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },

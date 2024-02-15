@@ -5,6 +5,8 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
 const DeleteProduct = ({ productId, onDelete }) => {
   const [open, setOpen] = useState(false);
 
@@ -21,7 +23,7 @@ const DeleteProduct = ({ productId, onDelete }) => {
       const accessKey = localStorage.getItem('accessToken');
 
       // Make a DELETE request to your API
-      const response = await axios.delete(`http://localhost:8000/products/list/${productId}/`, {
+      const response = await axios.delete(`${backendUrl}/products/list/${productId}/`, {
         headers: {
           Authorization: `Bearer ${accessKey}`,
         },

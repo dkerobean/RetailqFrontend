@@ -27,6 +27,8 @@ const ProductPerformances = () => {
   const primarylight = theme.palette.primary.light;
   const greylight = theme.palette.grey[100];
 
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
   const optionsrow1chart = {
     chart: {
       type: 'area',
@@ -101,7 +103,7 @@ const ProductPerformances = () => {
   const fetchProductData = async () => {
   try {
     const accessToken = localStorage.getItem('accessToken');
-    const response = await axios.get('http://localhost:8000/dashboard/details/products/', {
+    const response = await axios.get(`${backendUrl}/dashboard/details/products/`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },

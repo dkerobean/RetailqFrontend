@@ -133,6 +133,14 @@ const FormDialog = ({ onAddSale }) => {
       // Show success alert
       toast.success('Sale added successfully');
 
+    // Reset the form
+    setFormData({
+      quantity_sold: 1,
+      sale_date: '',
+      product: '',
+      user: parseInt(localStorage.getItem('user_id'), 10),
+    });
+
       // Close the dialog
       handleClose();
 
@@ -144,7 +152,7 @@ const FormDialog = ({ onAddSale }) => {
       console.error('Error adding sale:', error);
 
       // Show error alert
-      toast.error('Error adding sale. Please try again.');
+      toast.warning('Quantity sold exceeds available qiantity', error);
       console.log(formData);
     }
   };

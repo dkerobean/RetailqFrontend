@@ -16,6 +16,8 @@ const SalesOverview = () => {
   const primarylight = theme.palette.primary.light;
   const textColor = theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.8)' : '#2A3547';
 
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
   const [salesData, setSalesData] = useState({
     income: 0,
     expense: 0
@@ -34,7 +36,7 @@ const SalesOverview = () => {
           return;
         }
 
-        const response = await axios.get('http://localhost:8000/dashboard/details/', {
+        const response = await axios.get(`${backendUrl}/dashboard/details/`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },

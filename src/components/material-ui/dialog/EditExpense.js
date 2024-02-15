@@ -21,6 +21,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { IconEdit } from '@tabler/icons';
 import { AddCircleOutlineOutlined } from '@mui/icons-material';
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
 const EditDialog = ({ expenseId, onEdit }) => {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -41,7 +43,7 @@ const EditDialog = ({ expenseId, onEdit }) => {
   const fetchExpense = async () => {
     try {
       const accessKey = localStorage.getItem('accessToken');
-      const response = await axios.get(`http://localhost:8000/sale/expense/${expenseId}/`, {
+      const response = await axios.get(`${backendUrl}/sale/expense/${expenseId}/`, {
         headers: {
           Authorization: `Bearer ${accessKey}`,
           'Content-Type': 'application/json',
@@ -54,7 +56,7 @@ const EditDialog = ({ expenseId, onEdit }) => {
           amount: response.data.amount,
           description: response.data.description,
           user: response.data.user,
-          category: response.data.category.id,
+          category: response.data.category,
         });
       } else {
         console.error('Invalid data format for expense:', response.data);
@@ -67,7 +69,7 @@ const EditDialog = ({ expenseId, onEdit }) => {
   const fetchCategories = async () => {
     try {
       const accessKey = localStorage.getItem('accessToken');
-      const response = await axios.get('http://localhost:8000/sale/expenses-category/', {
+      const response = await axios.get(`${backendUrl}/sale/expenses-category/`, {
         headers: {
           Authorization: `Bearer ${accessKey}`,
         },
@@ -116,13 +118,13 @@ const EditDialog = ({ expenseId, onEdit }) => {
 
     // For demonstration purposes, let's assume you have a function to add a new category
     const newCategoryId = 'some_generated_id';
-    
+
   };
 
   const handleEditExpense = async () => {
     try {
       const accessKey = localStorage.getItem('accessToken');
-      await axios.put(`http://localhost:8000/sale/expenses/${expenseId}/`, formData, {
+      await axios.put(`${backendUrl}/sale/expenses/${expenseId}/`, formData, {
         headers: {
           Authorization: `Bearer ${accessKey}`,
           'Content-Type': 'application/json',

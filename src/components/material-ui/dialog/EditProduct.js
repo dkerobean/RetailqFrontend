@@ -112,6 +112,7 @@ const AlertDialog = ({ productId, onEdit }) => {
                             label="Name"
                             type="text"
                             fullWidth
+                            InputProps={{ readOnly: true }}
                             value={formData.name}
                             onChange={handleInputChange}
                         />

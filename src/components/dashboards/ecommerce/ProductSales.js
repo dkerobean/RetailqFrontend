@@ -10,11 +10,13 @@ const RevenueUpdates = () => {
   const primary = theme.palette.primary.main;
   const secondary = theme.palette.error.main;
 
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
   useEffect(() => {
     const fetchSalesData = async () => {
       try {
         const accessToken = localStorage.getItem('accessToken');
-        const response = await fetch('http://localhost:8000/dashboard/details/', {
+        const response = await fetch(`${backendUrl}/dashboard/details/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },

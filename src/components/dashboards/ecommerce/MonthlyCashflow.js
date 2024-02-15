@@ -7,6 +7,7 @@ import { IconArrowUpLeft } from '@tabler/icons';
 import DashboardCard from '../../shared/DashboardCard';
 import icon1Img from 'src/assets/images/svgs/icon-master-card-2.svg';
 import axios from 'axios';
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 const MonthlyEarnings = () => {
   // chart color
@@ -30,7 +31,7 @@ const MonthlyEarnings = () => {
           return;
         }
 
-        const response = await axios.get('http://localhost:8000/dashboard/details/', {
+        const response = await axios.get(`${backendUrl}/dashboard/details/`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },

@@ -13,6 +13,8 @@ import { Button, Link, Typography } from '@mui/material';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import parseISO from 'date-fns/parseISO';
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
 const RecentTransactions = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,7 +24,7 @@ const RecentTransactions = () => {
   const fetchTransactions = async () => {
     try {
       const accessToken = localStorage.getItem('accessToken');
-      const response = await fetch('http://localhost:8000/dashboard/transactions/', {
+      const response = await fetch(`${backendUrl}/sale/transactions/`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },

@@ -4,6 +4,8 @@ import axios from 'axios';
 
 import welcomeImg from 'src/assets/images/backgrounds/welcome-bg2.png';
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
 const WelcomeCard = () => {
 
   const [userData, setUserData] = useState({});
@@ -21,7 +23,7 @@ const WelcomeCard = () => {
           return;
         }
 
-        const response = await axios.get('http://localhost:8000/user/profile/view/', {
+        const response = await axios.get(`${backendUrl}/user/profile/view/`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },

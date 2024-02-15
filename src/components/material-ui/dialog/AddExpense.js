@@ -18,6 +18,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import AddIcon from '@mui/icons-material/Add';
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
 const FormDialog = ({ onAdd }) => {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -39,7 +41,7 @@ const FormDialog = ({ onAdd }) => {
     const fetchCategories = async () => {
       try {
         const accessKey = localStorage.getItem('accessToken');
-        const response = await axios.get('http://localhost:8000/sale/expenses-category/', {
+        const response = await axios.get(`${backendUrl}/sale/expenses-category/`, {
           headers: {
             Authorization: `Bearer ${accessKey}`,
           },
@@ -121,7 +123,7 @@ const FormDialog = ({ onAdd }) => {
 
       // Make a POST request to your API
       const response = await axios.post(
-        'http://localhost:8000/sale/expenses/',
+        `${backendUrl}/sale/expenses/`,
         formDataWithUserId,
         {
           headers: {

@@ -19,6 +19,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AddIcon from '@mui/icons-material/Add';
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
 const FormDialog = ({ onAdd }) => {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -98,7 +100,7 @@ const FormDialog = ({ onAdd }) => {
 
       // Make a POST request to add a transaction
       await axios.post(
-        'http://localhost:8000/sale/transactions/',
+        `${backendUrl}/sale/transactions/`,
         formData,
         {
           headers: {

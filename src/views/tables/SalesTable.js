@@ -32,6 +32,8 @@ import { Stack } from '@mui/system';
 import FormDialog from 'src/components/material-ui/dialog/AddSale';
 import EditSale from 'src/components/material-ui/dialog/EditSale';
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -113,7 +115,7 @@ const PaginationTable = () => {
       // Retrieve access key from local storage
       const accessKey = localStorage.getItem('accessToken');
 
-      const response = await axios.get('http://127.0.0.1:8000/sale/all/', {
+      const response = await axios.get(`${backendUrl}/sale/all/`, {
         headers: {
           Authorization: `Bearer ${accessKey}`,
         },
@@ -135,7 +137,7 @@ const PaginationTable = () => {
     const fetchSalesData = async () => {
       try {
         const token = localStorage.getItem('accessToken');
-        const response = await axios.get('http://localhost:8000/sale/all/', {
+        const response = await axios.get(`${backendUrl}/sale/all/`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

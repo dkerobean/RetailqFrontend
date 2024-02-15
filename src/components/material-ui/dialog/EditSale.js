@@ -38,7 +38,7 @@ const EditDialog = ({ saleId, onEditSale }) => {
       quantity_sold: data.quantity_sold,
       sale_date: data.sale_date,
       user: data.user,
-      product: data.product,
+      product: data.product_name,
       status: data.status,
       product_name: data.product.name
     });
